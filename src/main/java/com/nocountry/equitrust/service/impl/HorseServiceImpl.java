@@ -24,10 +24,17 @@ public class HorseServiceImpl implements HorseService {
     public HorseResponseDTO createHorse(HorseRequestDTO horseRequestDTO) {
         User owner = userRepository.findById(horseRequestDTO.ownerId())
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Owner no encontrado con id: " + horseRequestDTO.ownerId()));
+                        () -> new ResourceNotFoundException("Dueño no encontrado con id: " + horseRequestDTO.ownerId()));
 
         Horse horse = horseMapper.toEntity(horseRequestDTO, owner);
         Horse savedHorse = horseRepository.save(horse);
         return horseMapper.toDTO(savedHorse);
+    }
+
+    @Override
+    public HorseResponseDTO getHorseById(Long id) {
+        Horse horse = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Caballo no encontrado con id: " + id));
+        return horseMapper.toDTO(horse);
     }
 }

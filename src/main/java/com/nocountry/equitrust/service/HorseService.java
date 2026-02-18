@@ -6,4 +6,6 @@ import com.nocountry.equitrust.dto.response.HorseResponseDTO;
 public interface HorseService {
 
     HorseResponseDTO createHorse(HorseRequestDTO horseRequestDTO);
+
+    HorseResponseDTO getHorseById(Long id);
 }

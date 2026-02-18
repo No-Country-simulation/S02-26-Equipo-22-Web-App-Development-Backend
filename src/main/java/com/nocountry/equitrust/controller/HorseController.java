@@ -6,10 +6,7 @@ import com.nocountry.equitrust.service.HorseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/horses")
@@ -22,5 +19,11 @@ public class HorseController {
     public ResponseEntity<HorseResponseDTO> createHorse(@RequestBody HorseRequestDTO horseRequestDTO) {
         HorseResponseDTO createdHorse = horseService.createHorse(horseRequestDTO);
         return new ResponseEntity<>(createdHorse, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HorseResponseDTO> getHorseById(@PathVariable Long id) {
+        HorseResponseDTO horse = horseService.getHorseById(id);
+        return ResponseEntity.ok(horse);
     }
 }
