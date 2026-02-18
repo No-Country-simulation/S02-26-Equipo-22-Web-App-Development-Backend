@@ -5,6 +5,7 @@ import com.nocountry.equitrust.dto.auth.LoginRequest;
 import com.nocountry.equitrust.dto.auth.RegisterRequest;
 import com.nocountry.equitrust.dto.auth.UserResponse;
 import com.nocountry.equitrust.exception.DuplicateResourceException;
+import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.model.Role;
 import com.nocountry.equitrust.model.User;
 import com.nocountry.equitrust.repository.UserRepository;
@@ -28,25 +29,25 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         // Check if email already exists
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new DuplicateResourceException("Email already registered");
         }
 
         // Check if DNI already exists
-        if (userRepository.existsByDni(request.getDni())) {
+        if (userRepository.existsByDni(request.dni())) {
             throw new DuplicateResourceException("DNI already registered");
         }
 
         // Create new user
         User user = User.builder()
-                .dni(request.getDni())
-                .name(request.getName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .number(request.getNumber())
-                .address(request.getAddress())
-                .rol(request.getRol() != null ? request.getRol() : Role.BUYER)
+                .dni(request.dni())
+                .name(request.name())
+                .lastName(request.lastName())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .number(request.number())
+                .address(request.address())
+                .rol(request.rol() != null ? request.rol() : Role.BUYER)
                 .enabled(true)
                 .build();
 
@@ -68,14 +69,14 @@ public class AuthService {
         // Authenticate user
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        request.email(),
+                        request.password()
                 )
         );
 
         // Find user
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // Generate JWT token
         String jwtToken = jwtService.generateToken(user);

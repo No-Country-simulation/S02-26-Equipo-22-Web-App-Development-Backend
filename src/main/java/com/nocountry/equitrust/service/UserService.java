@@ -3,12 +3,12 @@ package com.nocountry.equitrust.service;
 import com.nocountry.equitrust.dto.auth.ChangePasswordRequest;
 import com.nocountry.equitrust.dto.auth.UpdateProfileRequest;
 import com.nocountry.equitrust.dto.auth.UserResponse;
-import com.nocountry.equitrust.exception.DuplicateResourceException;
 import com.nocountry.equitrust.exception.InvalidPasswordException;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.model.User;
 import com.nocountry.equitrust.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
+    @Lazy
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -62,26 +65,27 @@ public class UserService implements UserDetailsService {
         return UserResponse.fromUser(user);
     }
 
-    // ACTUALIZAR PERFIL
+    // ACTUALIZAR PERFIL (Mejorado con Optional)
 
     @Transactional
     public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
-        // Actualizar solo los campos que no son null
-        if (request.getName() != null && !request.getName().isEmpty()) {
-            user.setName(request.getName());
-        }
-        if (request.getLastName() != null && !request.getLastName().isEmpty()) {
-            user.setLastName(request.getLastName());
-        }
-        if (request.getNumber() != null) {
-            user.setNumber(request.getNumber());
-        }
-        if (request.getAddress() != null) {
-            user.setAddress(request.getAddress());
-        }
+        // Usar Optional para actualizar solo campos no nulos y no vacíos
+        Optional.ofNullable(request.name())
+                .filter(name -> !name.isEmpty())
+                .ifPresent(user::setName);
+
+        Optional.ofNullable(request.lastName())
+                .filter(lastName -> !lastName.isEmpty())
+                .ifPresent(user::setLastName);
+
+        Optional.ofNullable(request.number())
+                .ifPresent(user::setNumber);
+
+        Optional.ofNullable(request.address())
+                .ifPresent(user::setAddress);
 
         User updatedUser = userRepository.save(user);
         return UserResponse.fromUser(updatedUser);
@@ -92,7 +96,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void changePassword(Long userId, ChangePasswordRequest request) {
         // Validar que las nuevas contraseñas coincidan
-        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+        if (!request.newPassword().equals(request.confirmPassword())) {
             throw new InvalidPasswordException("New password and confirmation do not match");
         }
 
@@ -100,17 +104,17 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         // Validar contraseña actual
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Current password is incorrect");
         }
 
         // Validar que la nueva contraseña sea diferente
-        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
             throw new InvalidPasswordException("New password must be different from current password");
         }
 
         // Actualizar contraseña
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
 
@@ -121,7 +125,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        // Soft delete - Hibernate maneja esto automáticamente por @SQLDelete
+        // Soft delete - Hibernate maneja esto automaticamente por @SQLDelete
         userRepository.delete(user);
     }
 

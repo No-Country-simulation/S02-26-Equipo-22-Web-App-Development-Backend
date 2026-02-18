@@ -3,34 +3,27 @@ package com.nocountry.equitrust.dto.auth;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nocountry.equitrust.model.Role;
 import com.nocountry.equitrust.model.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserResponse {
+public record UserResponse(
+        Long id,
+        String dni,
+        String name,
 
-    private Long id;
-    private String dni;
-    private String name;
+        @JsonProperty("last_name")
+        String lastName,
 
-    @JsonProperty("last_name")
-    private String lastName;
+        String email,
+        String number,
+        String address,
+        Role rol,
 
-    private String email;
-    private String number;
-    private String address;
-    private Role rol;
-
-    @JsonProperty("created_at")
-    private LocalDateTime createdAt;
-
+        @JsonProperty("created_at")
+        LocalDateTime createdAt
+) {
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())
