@@ -34,4 +34,11 @@ public class HorseController {
         List<HorseResponseDTO> horses = horseService.getAllHorses();
         return ResponseEntity.ok(horses);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HorseResponseDTO> updateHorse(@PathVariable Long id,
+                                                        @RequestBody HorseRequestDTO horseRequestDTO) {
+        HorseResponseDTO updatedHorse = horseService.updateHorse(id, horseRequestDTO);
+        return ResponseEntity.ok(updatedHorse);
+    }
 }
