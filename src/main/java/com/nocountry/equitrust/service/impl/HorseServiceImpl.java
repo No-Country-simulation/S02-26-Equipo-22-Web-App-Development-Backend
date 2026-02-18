@@ -12,6 +12,9 @@ import com.nocountry.equitrust.service.HorseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class HorseServiceImpl implements HorseService {
@@ -36,5 +39,12 @@ public class HorseServiceImpl implements HorseService {
         Horse horse = horseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Caballo no encontrado con id: " + id));
         return horseMapper.toDTO(horse);
+    }
+
+    @Override
+    public List<HorseResponseDTO> getAllHorses() {
+        return horseRepository.findAll().stream()
+                .map(horseMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

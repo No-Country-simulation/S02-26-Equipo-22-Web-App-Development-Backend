@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/horses")
 @RequiredArgsConstructor
@@ -25,5 +27,11 @@ public class HorseController {
     public ResponseEntity<HorseResponseDTO> getHorseById(@PathVariable Long id) {
         HorseResponseDTO horse = horseService.getHorseById(id);
         return ResponseEntity.ok(horse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<HorseResponseDTO>> getAllHorses() {
+        List<HorseResponseDTO> horses = horseService.getAllHorses();
+        return ResponseEntity.ok(horses);
     }
 }
