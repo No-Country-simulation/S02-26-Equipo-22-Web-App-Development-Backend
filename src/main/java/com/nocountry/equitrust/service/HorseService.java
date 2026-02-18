@@ -14,4 +14,6 @@ public interface HorseService {
     List<HorseResponseDTO> getAllHorses();
 
     HorseResponseDTO updateHorse(Long id, HorseRequestDTO horseRequestDTO);
+
+    void deleteHorse(Long id);
 }

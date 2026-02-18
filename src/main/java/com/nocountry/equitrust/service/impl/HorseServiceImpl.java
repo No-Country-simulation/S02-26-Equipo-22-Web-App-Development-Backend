@@ -68,4 +68,12 @@ public class HorseServiceImpl implements HorseService {
         Horse updatedHorse = horseRepository.save(horse);
         return horseMapper.toDTO(updatedHorse);
     }
+
+    @Override
+    public void deleteHorse(Long id) {
+        if (!horseRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Caballo no encontrado con id: " + id);
+        }
+        horseRepository.deleteById(id);
+    }
 }

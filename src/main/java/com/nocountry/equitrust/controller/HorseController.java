@@ -3,6 +3,7 @@ package com.nocountry.equitrust.controller;
 import com.nocountry.equitrust.dto.request.HorseRequestDTO;
 import com.nocountry.equitrust.dto.response.HorseResponseDTO;
 import com.nocountry.equitrust.service.HorseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class HorseController {
     private final HorseService horseService;
 
     @PostMapping
-    public ResponseEntity<HorseResponseDTO> createHorse(@RequestBody HorseRequestDTO horseRequestDTO) {
+    public ResponseEntity<HorseResponseDTO> createHorse(@Valid @RequestBody HorseRequestDTO horseRequestDTO) {
         HorseResponseDTO createdHorse = horseService.createHorse(horseRequestDTO);
         return new ResponseEntity<>(createdHorse, HttpStatus.CREATED);
     }
@@ -37,8 +38,14 @@ public class HorseController {
 
     @PutMapping("/{id}")
     public ResponseEntity<HorseResponseDTO> updateHorse(@PathVariable Long id,
-                                                        @RequestBody HorseRequestDTO horseRequestDTO) {
+                                                        @Valid @RequestBody HorseRequestDTO horseRequestDTO) {
         HorseResponseDTO updatedHorse = horseService.updateHorse(id, horseRequestDTO);
         return ResponseEntity.ok(updatedHorse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHorse(@PathVariable Long id) {
+        horseService.deleteHorse(id);
+        return ResponseEntity.noContent().build();
     }
 }
