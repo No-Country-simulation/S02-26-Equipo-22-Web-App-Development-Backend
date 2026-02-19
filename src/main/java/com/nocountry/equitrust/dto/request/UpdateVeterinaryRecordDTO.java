@@ -1,9 +1,8 @@
-package com.nocountry.equitrust.dto;
+package com.nocountry.equitrust.dto.request;
 
 import java.time.LocalDate;
 
-//Este se usa cuando se quiera hacer POST.
-public record VeterinaryRecordRequestDTO(
+public record UpdateVeterinaryRecordDTO(
         String description,
         String pdfLink,
         LocalDate date,
