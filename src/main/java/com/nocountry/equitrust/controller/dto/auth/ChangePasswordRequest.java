@@ -1,4 +1,4 @@
-package com.nocountry.equitrust.dto.auth;
+package com.nocountry.equitrust.controller.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

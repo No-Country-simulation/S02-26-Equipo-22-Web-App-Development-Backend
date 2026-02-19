@@ -1,8 +1,8 @@
-package com.nocountry.equitrust.dto.auth;
+package com.nocountry.equitrust.controller.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nocountry.equitrust.model.Role;
-import com.nocountry.equitrust.model.User;
+import com.nocountry.equitrust.model.user.Role;
+import com.nocountry.equitrust.model.user.User;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

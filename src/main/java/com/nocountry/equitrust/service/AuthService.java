@@ -1,13 +1,13 @@
 package com.nocountry.equitrust.service;
 
-import com.nocountry.equitrust.dto.auth.AuthResponse;
-import com.nocountry.equitrust.dto.auth.LoginRequest;
-import com.nocountry.equitrust.dto.auth.RegisterRequest;
-import com.nocountry.equitrust.dto.auth.UserResponse;
+import com.nocountry.equitrust.controller.dto.auth.AuthResponse;
+import com.nocountry.equitrust.controller.dto.auth.LoginRequest;
+import com.nocountry.equitrust.controller.dto.auth.RegisterRequest;
+import com.nocountry.equitrust.controller.dto.auth.UserResponse;
 import com.nocountry.equitrust.exception.DuplicateResourceException;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
-import com.nocountry.equitrust.model.Role;
-import com.nocountry.equitrust.model.User;
+import com.nocountry.equitrust.model.user.Role;
+import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.UserRepository;
 import com.nocountry.equitrust.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;

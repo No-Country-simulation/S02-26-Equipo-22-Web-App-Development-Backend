@@ -1,6 +1,6 @@
 package com.nocountry.equitrust.model.horse;
 
-import com.nocountry.equitrust.model.User;
+import com.nocountry.equitrust.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
