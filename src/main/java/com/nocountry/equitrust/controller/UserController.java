@@ -1,9 +1,9 @@
 package com.nocountry.equitrust.controller;
 
-import com.nocountry.equitrust.dto.auth.ChangePasswordRequest;
-import com.nocountry.equitrust.dto.auth.UpdateProfileRequest;
-import com.nocountry.equitrust.dto.auth.UserResponse;
-import com.nocountry.equitrust.model.User;
+import com.nocountry.equitrust.controller.dto.auth.ChangePasswordRequest;
+import com.nocountry.equitrust.controller.dto.auth.UpdateProfileRequest;
+import com.nocountry.equitrust.controller.dto.auth.UserResponse;
+import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -1,11 +1,11 @@
 package com.nocountry.equitrust.service;
 
-import com.nocountry.equitrust.dto.auth.ChangePasswordRequest;
-import com.nocountry.equitrust.dto.auth.UpdateProfileRequest;
-import com.nocountry.equitrust.dto.auth.UserResponse;
+import com.nocountry.equitrust.controller.dto.auth.ChangePasswordRequest;
+import com.nocountry.equitrust.controller.dto.auth.UpdateProfileRequest;
+import com.nocountry.equitrust.controller.dto.auth.UserResponse;
 import com.nocountry.equitrust.exception.InvalidPasswordException;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
-import com.nocountry.equitrust.model.User;
+import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;

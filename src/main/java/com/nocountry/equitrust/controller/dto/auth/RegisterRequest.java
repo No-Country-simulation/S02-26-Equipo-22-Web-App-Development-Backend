@@ -1,6 +1,6 @@
-package com.nocountry.equitrust.dto.auth;
+package com.nocountry.equitrust.controller.dto.auth;
 
-import com.nocountry.equitrust.model.Role;
+import com.nocountry.equitrust.model.user.Role;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 

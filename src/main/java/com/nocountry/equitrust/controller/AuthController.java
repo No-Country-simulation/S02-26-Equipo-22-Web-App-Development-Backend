@@ -1,8 +1,8 @@
 package com.nocountry.equitrust.controller;
 
-import com.nocountry.equitrust.dto.auth.AuthResponse;
-import com.nocountry.equitrust.dto.auth.LoginRequest;
-import com.nocountry.equitrust.dto.auth.RegisterRequest;
+import com.nocountry.equitrust.controller.dto.auth.AuthResponse;
+import com.nocountry.equitrust.controller.dto.auth.LoginRequest;
+import com.nocountry.equitrust.controller.dto.auth.RegisterRequest;
 import com.nocountry.equitrust.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

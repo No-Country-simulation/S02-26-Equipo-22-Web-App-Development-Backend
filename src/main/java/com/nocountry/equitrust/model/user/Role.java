@@ -1,4 +1,4 @@
-package com.nocountry.equitrust.model;
+package com.nocountry.equitrust.model.user;
 
 public enum Role {
     BUYER,      // Usuario que compra caballos

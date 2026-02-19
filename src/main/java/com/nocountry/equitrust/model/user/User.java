@@ -1,4 +1,4 @@
-package com.nocountry.equitrust.model;
+package com.nocountry.equitrust.model.user;
 
 import com.nocountry.equitrust.model.horse.Horse;
 import jakarta.persistence.*;
