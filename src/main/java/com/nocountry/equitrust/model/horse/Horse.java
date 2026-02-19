@@ -1,6 +1,6 @@
 package com.nocountry.equitrust.model.horse;
 
-import com.nocountry.equitrust.model.User;
+import com.nocountry.equitrust.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +14,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "horses")
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
 @SQLDelete(sql = "UPDATE horses SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 public class Horse {
@@ -28,8 +31,10 @@ public class Horse {
 
     @Column(nullable = false)
     private String breed;
+
     @Column(columnDefinition = "TEXT")
     private String description;
+
     private boolean sold = false;
     private String location;
     private BigDecimal price;
@@ -52,7 +57,7 @@ public class Horse {
     private User owner;
 
     @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL)
-    List<VeterinaryRecord> records = new ArrayList<VeterinaryRecord>();
+    private List<VeterinaryRecord> records = new ArrayList<>();
 
     public Horse(String breed, String description, String location, BigDecimal price, User owner) {
         this.breed = breed;
