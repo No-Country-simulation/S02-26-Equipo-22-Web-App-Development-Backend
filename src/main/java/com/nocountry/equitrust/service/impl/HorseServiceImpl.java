@@ -1,15 +1,20 @@
 package com.nocountry.equitrust.service.impl;
 
+import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
 import com.nocountry.equitrust.controller.dto.horse.HorseRequestDTO;
 import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.mapper.HorseMapper;
 import com.nocountry.equitrust.model.horse.Horse;
 import com.nocountry.equitrust.model.user.User;
-import com.nocountry.equitrust.repository.HorseRepository;
+import com.nocountry.equitrust.repository.horse.HorseRepository;
 import com.nocountry.equitrust.repository.UserRepository;
+import com.nocountry.equitrust.repository.horse.specification.HorseSpecifications;
 import com.nocountry.equitrust.service.interfaces.HorseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,5 +80,21 @@ public class HorseServiceImpl implements HorseService {
             throw new ResourceNotFoundException("Caballo no encontrado con id: " + id);
         }
         horseRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Horse> getCatalog(HorseFilterRequest filter, Pageable pageable) {
+
+        Specification<Horse> spec = Specification
+                .where(HorseSpecifications.verifiedOnly())
+                .and(HorseSpecifications.notSold(filter.getIncludeSold()))
+                .and(HorseSpecifications.breed(filter.getBreed()))
+                .and(HorseSpecifications.temperament(filter.getTemperament()))
+                .and(HorseSpecifications.priceBetween(filter.getMinPrice(), filter.getMaxPrice()))
+                .and(HorseSpecifications.ageBetween(filter.getMinAge(), filter.getMaxAge()))
+                .and(HorseSpecifications.location(filter.getLocation()))
+                .and(HorseSpecifications.search(filter.getSearch()));
+
+        return horseRepository.findAll(spec, pageable);
     }
 }
