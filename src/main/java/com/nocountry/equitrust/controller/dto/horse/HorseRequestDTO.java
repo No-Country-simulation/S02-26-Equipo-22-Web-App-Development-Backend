@@ -1,16 +1,16 @@
-package com.nocountry.equitrust.dto.response;
+package com.nocountry.equitrust.controller.dto.horse;
 
-import com.nocountry.equitrust.model.horse.VerificationStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
-public record HorseResponseDTO(
-
-        @Schema(description = "Identificador único del caballo", example = "1")
-        Long id,
+public record HorseRequestDTO(
 
         @Schema(description = "Raza del caballo", example = "Andaluz")
+        @NotBlank(message = "La raza es requerido")
         String breed,
 
         @Schema(description = "Descripción detallada del caballo", example = "Un hermoso semental blanco, bien entrenado.")
@@ -20,11 +20,10 @@ public record HorseResponseDTO(
         String location,
 
         @Schema(description = "Precio de venta del caballo en dólares", example = "15000.00")
+        @Positive(message = "El precio debe ser positivo")
         BigDecimal price,
 
-        @Schema(description = "Estado de verificación", example = "PENDING_DATA")
-        VerificationStatus status,
-
         @Schema(description = "ID del usuario dueño del caballo", example = "1")
+        @NotNull(message = "El ID del dueño es requerido")
         Long ownerId
-) { }
+) {}

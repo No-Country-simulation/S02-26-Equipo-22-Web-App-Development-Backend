@@ -1,14 +1,14 @@
 package com.nocountry.equitrust.service.impl;
 
-import com.nocountry.equitrust.dto.request.HorseRequestDTO;
-import com.nocountry.equitrust.dto.response.HorseResponseDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseRequestDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.mapper.HorseMapper;
 import com.nocountry.equitrust.model.horse.Horse;
 import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.HorseRepository;
 import com.nocountry.equitrust.repository.UserRepository;
-import com.nocountry.equitrust.service.HorseService;
+import com.nocountry.equitrust.service.interfaces.HorseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
