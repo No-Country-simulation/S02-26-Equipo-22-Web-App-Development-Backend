@@ -25,6 +25,7 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE horses SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
 public class Horse {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,16 +33,35 @@ public class Horse {
     @Column(nullable = false)
     private String breed;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(nullable = false)
+    private Integer age;
 
-    private boolean sold = false;
-    private String location;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Temperament temperament;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private HorseType type;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(name = "discount_price")
+    private BigDecimal discountPrice;
+
+    @Column(nullable = false)
+    private boolean sold = false;
+
+    @Column(nullable = false)
+    private String location;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "verification_status", nullable = false)
     private VerificationStatus status = VerificationStatus.PENDING_DATA;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @CreatedDate
     @Column(updatable = false)
@@ -59,11 +79,14 @@ public class Horse {
     @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL)
     private List<VeterinaryRecord> records = new ArrayList<>();
 
-    public Horse(String breed, String description, String location, BigDecimal price, User owner) {
+    public Horse(String breed, Integer age, Temperament temperament, HorseType type, BigDecimal price, String location, String description, User owner) {
         this.breed = breed;
-        this.description = description;
-        this.location = location;
+        this.age = age;
+        this.temperament = temperament;
+        this.type = type;
         this.price = price;
+        this.location = location;
+        this.description = description;
         this.owner = owner;
     }
 }
