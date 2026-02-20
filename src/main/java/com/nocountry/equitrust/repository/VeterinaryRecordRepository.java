@@ -12,8 +12,7 @@ public interface VeterinaryRecordRepository
 
     Optional<VeterinaryRecord> findByIdAndHorseId(Long recordId, Long horseId);
 
-    List<VeterinaryRecord> findByHorseId(Long horseId);
+    List<VeterinaryRecord> findAllByHorseId(Long horseId);
 
-    List<VeterinaryRecord> findByHorse(Horse horse);
-
+    long deleteByIdAndHorseId(Long recordId, Long horseId);
 }

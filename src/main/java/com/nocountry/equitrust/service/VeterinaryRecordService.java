@@ -1,15 +1,15 @@
 package com.nocountry.equitrust.service;
 
-import com.nocountry.equitrust.dto.request.CreateVeterinaryRecordDTO;
-import com.nocountry.equitrust.dto.request.UpdateVeterinaryRecordDTO;
-import com.nocountry.equitrust.dto.response.VeterinaryRecordResponseDTO;
+import com.nocountry.equitrust.controller.dto.veterinaryRecord.CreateVeterinaryRecordDTO;
+import com.nocountry.equitrust.controller.dto.veterinaryRecord.UpdateVeterinaryRecordDTO;
 import com.nocountry.equitrust.model.Horse;
 import com.nocountry.equitrust.model.VeterinaryRecord;
 import com.nocountry.equitrust.repository.HorseRepository;
 import com.nocountry.equitrust.repository.VeterinaryRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.nocountry.equitrust.exception.VeterinaryRecordNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -22,89 +22,75 @@ public class VeterinaryRecordService {
     /**
      * Crea un registro veterinario asociado a un caballo.
      */
-    public VeterinaryRecordResponseDTO createVeterinaryRecordForHorse(
+    @Transactional
+    public VeterinaryRecord createVeterinaryRecordForHorse(
             Long horseId,
             CreateVeterinaryRecordDTO dto) {
-        //exeption de caballos
         Horse horse = horseRepository.findById(horseId)
-                .orElseThrow(() -> new RuntimeException("Caballo no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + horseId));
 
         VeterinaryRecord record = dto.toModel(horse);
 
-        VeterinaryRecord saved = recordRepository.save(record);
+        // Si el caballo estaba verificado y agrega un registro nuevo, el ADMIN debe verificar nuevamente
+        horse.updateStatusToPending();
 
-        return VeterinaryRecordResponseDTO.fromModel(saved);
+        return recordRepository.save(record);
     }
 
     /**
      * Obtiene todos los registros veterinarios de un caballo.
      */
-    public List<VeterinaryRecordResponseDTO> getAllRecordsByHorse(Long horseId) {
-            //exeption de caballos
-        Horse horse = horseRepository.findById(horseId)
-                .orElseThrow(() -> new RuntimeException("Caballo no encontrado"));
-
-        return recordRepository.findByHorse(horse)
-                .stream()
-                .map(VeterinaryRecordResponseDTO::fromModel)
-                .toList();
+    @Transactional(readOnly = true)
+    public List<VeterinaryRecord> getAllRecordsByHorse(Long horseId) {
+        return recordRepository.findAllByHorseId(horseId);
     }
 
     /**
      * Obtiene un registro veterinario específico.
      */
-    public VeterinaryRecordResponseDTO getRecordById(Long horseId, Long recordId) {
-        VeterinaryRecord record = recordRepository
+    @Transactional(readOnly = true)
+    public VeterinaryRecord getRecordById(Long horseId, Long recordId) {
+        return recordRepository
                 .findByIdAndHorseId(recordId, horseId)
-                .orElseThrow(() -> new VeterinaryRecordNotFoundException(recordId));
-
-
-        if (!record.getHorse().getId().equals(horse.getId())) {
-            throw new VeterinaryRecordNotFoundException(recordId);
-        }
-
-        return VeterinaryRecordResponseDTO.fromModel(record);
-    }
-
-    /**
-     * Elimina un registro veterinario.
-     */
-    public void deleteRecord(Long horseId, Long recordId) {
-
-        VeterinaryRecord record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new VeterinaryRecordNotFoundException(recordId));
-
-        if (!record.getHorse().getId().equals(horseId)) {
-            throw new VeterinaryRecordNotFoundException(recordId);
-        }
-
-        recordRepository.delete(record);
+                .orElseThrow(() -> new ResourceNotFoundException("Record not found with id: " + recordId + " for horse with id: " + horseId));
     }
 
     /**
      * Actualiza un registro veterinario existente.
      */
-    public VeterinaryRecordResponseDTO updateRecord(
+    @Transactional
+    public VeterinaryRecord updateRecord(
             Long horseId,
             Long recordId,
             UpdateVeterinaryRecordDTO dto) {
 
-        VeterinaryRecord record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new VeterinaryRecordNotFoundException(recordId));
+        VeterinaryRecord record = recordRepository.findByIdAndHorseId(recordId, horseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record not found with id: " + recordId + " for horse with id: " + horseId));
 
-        if (!record.getHorse().getId().equals(horseId)) {
-            throw new VeterinaryRecordNotFoundException(recordId);
+        dto.updateModel(record);
+
+        // Cualquier cambio en documentos invalida la confianza previa
+        record.getHorse().updateStatusToPending();
+
+        return recordRepository.save(record);
+    }
+
+    /**
+     * Elimina un registro veterinario.
+     */
+    @Transactional
+    public void deleteRecord(Long horseId, Long recordId) {
+        Horse horse = horseRepository.findById(horseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + horseId));
+
+        long count = recordRepository.deleteByIdAndHorseId(recordId, horseId);
+
+        if (count == 0) {
+            throw new ResourceNotFoundException("Record not found with id: " + recordId + " for horse with id: " + horseId");
         }
 
-        record.setDescription(dto.description());
-        record.setPdfLink(dto.pdfLink());
-        record.setDate(dto.date());
-        record.setClinicAddress(dto.clinicAddress());
-        record.setVeterinarianLicense(dto.veterinarianLicense());
-
-        VeterinaryRecord updated = recordRepository.save(record);
-
-        return VeterinaryRecordResponseDTO.fromModel(updated);
+        // Si borra un registro, el caballo SIEMPRE vuelve a estar pendiente de verificación
+        horse.updateStatusToPending();
     }
 }
 

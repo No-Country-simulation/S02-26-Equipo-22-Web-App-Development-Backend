@@ -1,4 +1,4 @@
-package com.nocountry.equitrust.dto.response;
+package com.nocountry.equitrust.controller.dto.veterinaryRecord;
 
 import com.nocountry.equitrust.model.VeterinaryRecord;
 
@@ -11,7 +11,6 @@ public record VeterinaryRecordResponseDTO(
         LocalDate date,
         String clinicAddress,
         String veterinarianLicense,
-        boolean verified,
         Long horseId
 ) {
 
@@ -23,7 +22,6 @@ public record VeterinaryRecordResponseDTO(
                 record.getDate(),
                 record.getClinicAddress(),
                 record.getVeterinarianLicense(),
-                record.isVerified(),
                 record.getHorse().getId()
         );
     }

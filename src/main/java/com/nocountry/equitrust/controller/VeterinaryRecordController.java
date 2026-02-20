@@ -1,7 +1,7 @@
 package com.nocountry.equitrust.controller;
 
-import com.nocountry.equitrust.dto.request.CreateVeterinaryRecordDTO;
-import com.nocountry.equitrust.dto.response.VeterinaryRecordResponseDTO;
+import com.nocountry.equitrust.controller.dto.veterinaryRecord.CreateVeterinaryRecordDTO;
+import com.nocountry.equitrust.controller.dto.veterinaryRecord.VeterinaryRecordResponseDTO;
 import com.nocountry.equitrust.service.VeterinaryRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,8 +37,7 @@ public class VeterinaryRecordController {
             @PathVariable Long horseId,
             @Valid @RequestBody CreateVeterinaryRecordDTO dto) {
 
-        VeterinaryRecordResponseDTO response =
-                recordService.createVeterinaryRecordForHorse(horseId, dto);
+        VeterinaryRecordResponseDTO response = recordService.createVeterinaryRecordForHorse(horseId, dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -52,8 +51,7 @@ public class VeterinaryRecordController {
     public ResponseEntity<List<VeterinaryRecordResponseDTO>> getAllRecords(
             @PathVariable Long horseId) {
 
-        List<VeterinaryRecordResponseDTO> records =
-                recordService.getAllRecordsByHorse(horseId);
+        List<VeterinaryRecordResponseDTO> records = recordService.getAllRecordsByHorse(horseId);
 
         return ResponseEntity.ok(records);
     }
@@ -71,8 +69,7 @@ public class VeterinaryRecordController {
             @PathVariable Long horseId,
             @PathVariable Long recordId) {
 
-        VeterinaryRecordResponseDTO record =
-                recordService.getRecordById(horseId, recordId);
+        VeterinaryRecordResponseDTO record = recordService.getRecordById(horseId, recordId);
 
         return ResponseEntity.ok(record);
     }
@@ -92,8 +89,7 @@ public class VeterinaryRecordController {
             @PathVariable Long recordId,
             @Valid @RequestBody CreateVeterinaryRecordDTO dto) {
 
-        VeterinaryRecordResponseDTO updated =
-                recordService.updateRecord(horseId, recordId, dto);
+        VeterinaryRecordResponseDTO updated = recordService.updateRecord(horseId, recordId, dto);
 
         return ResponseEntity.ok(updated);
     }

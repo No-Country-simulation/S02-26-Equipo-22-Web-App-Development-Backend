@@ -33,18 +33,9 @@ public class VeterinaryRecord {
     @Column(nullable = false)
     private String veterinarianLicense;
 
-    @Column(nullable = false)
-    private boolean verified = false;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "horse_id", nullable = false)
     private Horse horse;
-
-    //en caso de usar la entidad veterinaria
-    //@ManyToOne
-    //@JoinColumn(name = "veterinarian_id")
-    //private User veterinarian;
 
     public VeterinaryRecord(String description, String pdfLink, LocalDate date, String clinicAddress, String veterinarianLicense, Horse horse) {
         this.description = description;
@@ -53,6 +44,5 @@ public class VeterinaryRecord {
         this.clinicAddress = clinicAddress;
         this.veterinarianLicense = veterinarianLicense;
         this.horse = horse;
-        this.verified = false;
     }
 }
