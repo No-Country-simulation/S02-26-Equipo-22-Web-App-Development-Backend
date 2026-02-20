@@ -1,6 +1,6 @@
 package com.nocountry.equitrust.controller.dto.veterinaryRecord;
 
-import com.nocountry.equitrust.model.VeterinaryRecord;
+import com.nocountry.equitrust.model.horse.VeterinaryRecord;
 
 import java.time.LocalDate;
 

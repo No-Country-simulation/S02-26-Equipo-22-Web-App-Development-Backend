@@ -1,6 +1,7 @@
 package com.nocountry.equitrust.controller;
 
 import com.nocountry.equitrust.controller.dto.veterinaryRecord.CreateVeterinaryRecordDTO;
+import com.nocountry.equitrust.controller.dto.veterinaryRecord.UpdateVeterinaryRecordDTO;
 import com.nocountry.equitrust.controller.dto.veterinaryRecord.VeterinaryRecordResponseDTO;
 import com.nocountry.equitrust.service.VeterinaryRecordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +38,7 @@ public class VeterinaryRecordController {
             @PathVariable Long horseId,
             @Valid @RequestBody CreateVeterinaryRecordDTO dto) {
 
-        VeterinaryRecordResponseDTO response = recordService.createVeterinaryRecordForHorse(horseId, dto);
+        VeterinaryRecordResponseDTO response = VeterinaryRecordResponseDTO.fromModel(recordService.createVeterinaryRecordForHorse(horseId, dto));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -51,7 +52,10 @@ public class VeterinaryRecordController {
     public ResponseEntity<List<VeterinaryRecordResponseDTO>> getAllRecords(
             @PathVariable Long horseId) {
 
-        List<VeterinaryRecordResponseDTO> records = recordService.getAllRecordsByHorse(horseId);
+        List<VeterinaryRecordResponseDTO> records = recordService.getAllRecordsByHorse(horseId)
+                .stream()
+                .map(VeterinaryRecordResponseDTO::fromModel)
+                .toList();
 
         return ResponseEntity.ok(records);
     }
@@ -69,7 +73,7 @@ public class VeterinaryRecordController {
             @PathVariable Long horseId,
             @PathVariable Long recordId) {
 
-        VeterinaryRecordResponseDTO record = recordService.getRecordById(horseId, recordId);
+        VeterinaryRecordResponseDTO record = VeterinaryRecordResponseDTO.fromModel(recordService.getRecordById(horseId, recordId));
 
         return ResponseEntity.ok(record);
     }
@@ -77,7 +81,7 @@ public class VeterinaryRecordController {
     /**
      * Actualiza un registro veterinario existente.
      */
-    @PutMapping("/{recordId}")
+    @PatchMapping("/{recordId}")
     @Operation(summary = "Actualizar registro veterinario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Registro actualizado correctamente"),
@@ -87,9 +91,9 @@ public class VeterinaryRecordController {
     public ResponseEntity<VeterinaryRecordResponseDTO> updateRecord(
             @PathVariable Long horseId,
             @PathVariable Long recordId,
-            @Valid @RequestBody CreateVeterinaryRecordDTO dto) {
+            @Valid @RequestBody UpdateVeterinaryRecordDTO dto) {
 
-        VeterinaryRecordResponseDTO updated = recordService.updateRecord(horseId, recordId, dto);
+        VeterinaryRecordResponseDTO updated = VeterinaryRecordResponseDTO.fromModel(recordService.updateRecord(horseId, recordId, dto));
 
         return ResponseEntity.ok(updated);
     }

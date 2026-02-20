@@ -1,8 +1,6 @@
 package com.nocountry.equitrust.controller.dto.veterinaryRecord;
 
-import com.nocountry.equitrust.model.VeterinaryRecord;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.nocountry.equitrust.model.horse.VeterinaryRecord;
 import jakarta.validation.constraints.PastOrPresent;
 import org.hibernate.validator.constraints.URL;
 

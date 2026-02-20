@@ -2,8 +2,9 @@ package com.nocountry.equitrust.service;
 
 import com.nocountry.equitrust.controller.dto.veterinaryRecord.CreateVeterinaryRecordDTO;
 import com.nocountry.equitrust.controller.dto.veterinaryRecord.UpdateVeterinaryRecordDTO;
-import com.nocountry.equitrust.model.Horse;
-import com.nocountry.equitrust.model.VeterinaryRecord;
+import com.nocountry.equitrust.exception.ResourceNotFoundException;
+import com.nocountry.equitrust.model.horse.VeterinaryRecord;
+import com.nocountry.equitrust.model.horse.Horse;
 import com.nocountry.equitrust.repository.HorseRepository;
 import com.nocountry.equitrust.repository.VeterinaryRecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +87,7 @@ public class VeterinaryRecordService {
         long count = recordRepository.deleteByIdAndHorseId(recordId, horseId);
 
         if (count == 0) {
-            throw new ResourceNotFoundException("Record not found with id: " + recordId + " for horse with id: " + horseId");
+            throw new ResourceNotFoundException("Record not found with id: " + recordId + " for horse with id: " + horseId);
         }
 
         // Si borra un registro, el caballo SIEMPRE vuelve a estar pendiente de verificación

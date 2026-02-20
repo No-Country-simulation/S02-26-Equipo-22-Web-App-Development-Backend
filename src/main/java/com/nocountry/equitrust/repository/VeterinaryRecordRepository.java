@@ -1,7 +1,6 @@
 package com.nocountry.equitrust.repository;
 
-import com.nocountry.equitrust.model.Horse;
-import com.nocountry.equitrust.model.VeterinaryRecord;
+import com.nocountry.equitrust.model.horse.VeterinaryRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

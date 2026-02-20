@@ -1,8 +1,8 @@
 package com.nocountry.equitrust.controller.dto.veterinaryRecord;
 
 
-import com.nocountry.equitrust.model.Horse;
-import com.nocountry.equitrust.model.VeterinaryRecord;
+import com.nocountry.equitrust.model.horse.VeterinaryRecord;
+import com.nocountry.equitrust.model.horse.Horse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
