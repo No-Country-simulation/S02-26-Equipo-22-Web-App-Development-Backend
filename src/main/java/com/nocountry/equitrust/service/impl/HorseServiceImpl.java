@@ -63,13 +63,6 @@ public class HorseServiceImpl implements HorseService {
         horse.setLocation(horseRequestDTO.location());
         horse.setPrice(horseRequestDTO.price());
 
-        if (!horse.getOwner().getId().equals(horseRequestDTO.ownerId())) {
-            User newOwner = userRepository.findById(horseRequestDTO.ownerId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Dueño no encontrado con id: " + horseRequestDTO.ownerId()));
-            horse.setOwner(newOwner);
-        }
-
         Horse updatedHorse = horseRepository.save(horse);
         return horseMapper.toDTO(updatedHorse);
     }

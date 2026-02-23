@@ -89,4 +89,8 @@ public class Horse {
         this.description = description;
         this.owner = owner;
     }
+
+    public void updateStatusToPending(){
+        this.status = VerificationStatus.PENDING_VERIFICATION;
+    }
 }
