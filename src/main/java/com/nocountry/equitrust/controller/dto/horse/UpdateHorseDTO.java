@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Schema(description = "DTO for partially updating a horse (PATCH)")
-public record HorseUpdateDTO(
+public record UpdateHorseDTO(
 
         @Schema(description = "Horse breed", example = "Arabian")
         String breed,
@@ -18,7 +18,7 @@ public record HorseUpdateDTO(
         @Schema(description = "Horse age in years", example = "6", minimum = "0", maximum = "40")
         Integer age,
 
-        @Schema(description = "Horse gender", example = "FEMALE")
+        @Schema(description = "Horse gender", example = "MARE")
         Gender gender,
 
         @Schema(description = "Horse temperament", example = "ENERGETIC")

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Schema(description = "DTO for creating a new horse")
-public record HorseRequestDTO(
+public record CreateHorseDTO(
 
         @Schema(description = "Horse breed", example = "Arabian", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "Breed is required")
