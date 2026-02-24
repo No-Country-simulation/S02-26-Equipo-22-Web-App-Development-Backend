@@ -15,11 +15,10 @@ public interface HorseService {
 
     HorseResponseDTO getHorseById(Long id);
 
-    List<HorseResponseDTO> getAllHorses();
+    Page<HorseResponseDTO> getHorses(HorseFilterRequest filter, Pageable pageable);
 
     HorseResponseDTO updateHorse(Long id, HorseRequestDTO horseRequestDTO);
 
     void deleteHorse(Long id);
 
-    Page<Horse> getCatalog(HorseFilterRequest filter, Pageable pageable);
 }

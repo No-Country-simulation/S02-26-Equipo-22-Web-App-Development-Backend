@@ -2,6 +2,7 @@ package com.nocountry.equitrust.model.horse;
 
 import com.nocountry.equitrust.model.user.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,15 +39,21 @@ public class Horse {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Temperament temperament;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private HorseType type;
+    private Discipline discipline;
 
+    @Setter(AccessLevel.NONE)
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Setter(AccessLevel.NONE)
     @Column(name = "discount_price")
     private BigDecimal discountPrice;
 
@@ -63,6 +70,9 @@ public class Horse {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "video_id", nullable = false)
+    private String videoId;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -76,21 +86,78 @@ public class Horse {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HorseImage> images = new ArrayList<>();
+
     @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL)
     private List<VeterinaryRecord> records = new ArrayList<>();
 
-    public Horse(String breed, Integer age, Temperament temperament, HorseType type, BigDecimal price, String location, String description, User owner) {
+
+    public Horse(String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
+                 String videoId, User owner) {
+        validatePrice(price, discountPrice);
         this.breed = breed;
         this.age = age;
+        this.gender = gender;
         this.temperament = temperament;
-        this.type = type;
+        this.discipline = discipline;
         this.price = price;
         this.location = location;
         this.description = description;
         this.owner = owner;
+        this.videoId = videoId;
+        imagePublicIds.forEach(this::addImage);
+    }
+
+
+    private void validatePrice(BigDecimal price, BigDecimal discountPrice) {
+        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0");
+        }
+        if (discountPrice != null) {
+            if (discountPrice.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Discount price must be greater than 0");
+            }
+            if (discountPrice.compareTo(price) >= 0) {
+                throw new IllegalArgumentException(
+                        "Discount price must be lower than the base price"
+                );
+            }
+        }
+    }
+
+    public void changeBasePrice(BigDecimal newPrice) {
+        validatePrice(newPrice, this.discountPrice);
+        this.price = newPrice;
+    }
+
+    public void changeDiscountPrice(BigDecimal discountPrice) {
+        validatePrice(this.price, discountPrice);
+        this.discountPrice = discountPrice;
+    }
+
+    public void removeDiscount() {
+        this.discountPrice = null;
     }
 
     public void updateStatusToPending(){
         this.status = VerificationStatus.PENDING_VERIFICATION;
+    }
+
+    public void addImage(String publicId) {
+        this.validateImage(publicId);
+        HorseImage image = new HorseImage(publicId, this);
+        this.images.add(image);
+    }
+
+    private void validateImage(String publicId) {
+        if (publicId == null || publicId.isBlank()) {
+            throw new IllegalArgumentException("Image public ID cannot be empty");
+        }
+    }
+
+    public void replaceImages(List<String> publicIds) {
+        this.images.clear();
+        publicIds.forEach(this::addImage);
     }
 }

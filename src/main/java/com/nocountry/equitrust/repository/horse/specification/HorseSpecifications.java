@@ -1,13 +1,30 @@
 package com.nocountry.equitrust.repository.horse.specification;
 
-import com.nocountry.equitrust.model.horse.Horse;
-import com.nocountry.equitrust.model.horse.Temperament;
-import com.nocountry.equitrust.model.horse.VerificationStatus;
+import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
+import com.nocountry.equitrust.model.horse.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 
 public class HorseSpecifications {
+
+    public static Specification<Horse> withFilters(HorseFilterRequest filter) {
+        if (filter == null) {
+            return Specification.where(null);
+        }
+
+        return Specification
+                .where(breed(filter.getBreed()))
+                .and(gender(filter.getGender()))
+                .and(temperament(filter.getTemperament()))
+                .and(discipline(filter.getDiscipline()))
+                .and(priceBetween(filter.getMinPrice(), filter.getMaxPrice()))
+                .and(ageBetween(filter.getMinAge(), filter.getMaxAge()))
+                .and(location(filter.getLocation()))
+                .and(isVerified(filter.getIsVerified()))
+                .and(notSold(filter.getIncludeSold()));
+    }
+
     public static Specification<Horse> notSold(Boolean includeSold) {
         return (root, query, cb) -> {
             if (Boolean.TRUE.equals(includeSold)) {
@@ -17,15 +34,24 @@ public class HorseSpecifications {
         };
     }
 
-    public static Specification<Horse> verifiedOnly() {
-        return (root, query, cb) ->
-                cb.equal(root.get("status"), VerificationStatus.VERIFIED);
+    public static Specification<Horse> isVerified(Boolean isVerified) {
+        return (root, query, cb) -> {
+            if (isVerified == null) return cb.conjunction();
+
+            if (isVerified) {
+                return cb.equal(root.get("status"), VerificationStatus.VERIFIED);
+            } else {
+                return cb.notEqual(root.get("status"), VerificationStatus.VERIFIED);
+            }
+        };
     }
 
     public static Specification<Horse> breed(String breed) {
         return (root, query, cb) -> {
             if (breed == null || breed.isBlank()) return cb.conjunction();
-            return cb.equal(cb.lower(root.get("breed")), breed.toLowerCase());
+
+            String value = breed.trim().toLowerCase();
+            return cb.equal(cb.lower(root.get("breed")), value);
         };
     }
 
@@ -39,10 +65,17 @@ public class HorseSpecifications {
     public static Specification<Horse> priceBetween(BigDecimal min, BigDecimal max) {
         return (root, query, cb) -> {
             if (min == null && max == null) return cb.conjunction();
+
+            if (min != null && max != null && min.compareTo(max) > 0) {
+                return cb.conjunction();
+            }
+
             if (min != null && max != null)
                 return cb.between(root.get("price"), min, max);
+
             if (min != null)
                 return cb.greaterThanOrEqualTo(root.get("price"), min);
+
             return cb.lessThanOrEqualTo(root.get("price"), max);
         };
     }
@@ -50,10 +83,17 @@ public class HorseSpecifications {
     public static Specification<Horse> ageBetween(Integer min, Integer max) {
         return (root, query, cb) -> {
             if (min == null && max == null) return cb.conjunction();
+
+            if (min != null && max != null && min > max) {
+                return cb.conjunction();
+            }
+
             if (min != null && max != null)
                 return cb.between(root.get("age"), min, max);
+
             if (min != null)
                 return cb.greaterThanOrEqualTo(root.get("age"), min);
+
             return cb.lessThanOrEqualTo(root.get("age"), max);
         };
     }
@@ -61,22 +101,23 @@ public class HorseSpecifications {
     public static Specification<Horse> location(String location) {
         return (root, query, cb) -> {
             if (location == null || location.isBlank()) return cb.conjunction();
-            return cb.like(cb.lower(root.get("location")),
-                    "%" + location.toLowerCase() + "%");
+
+            String value = location.trim().toLowerCase();
+            return cb.like(cb.lower(root.get("location")), "%" + value + "%");
         };
     }
 
-    public static Specification<Horse> search(String text) {
+    public static Specification<Horse> gender(Gender gender) {
         return (root, query, cb) -> {
-            if (text == null || text.isBlank()) return cb.conjunction();
+            if (gender == null) return cb.conjunction();
+            return cb.equal(root.get("gender"), gender);
+        };
+    }
 
-            String pattern = "%" + text.toLowerCase() + "%";
-
-            return cb.or(
-                    cb.like(cb.lower(root.get("description")), pattern),
-                    cb.like(cb.lower(root.get("breed")), pattern)
-            );
+    private static Specification<Horse> discipline(Discipline discipline) {
+        return (root, query, cb) -> {
+            if(discipline == null) return cb.conjunction();
+            return cb.equal(root.get("discipline"), discipline);
         };
     }
 }
-

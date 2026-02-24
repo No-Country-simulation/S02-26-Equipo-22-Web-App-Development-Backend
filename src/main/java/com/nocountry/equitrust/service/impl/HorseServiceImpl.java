@@ -13,9 +13,12 @@ import com.nocountry.equitrust.repository.horse.specification.HorseSpecification
 import com.nocountry.equitrust.service.interfaces.HorseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,11 +49,14 @@ public class HorseServiceImpl implements HorseService {
         return horseMapper.toDTO(horse);
     }
 
+
     @Override
-    public List<HorseResponseDTO> getAllHorses() {
-        return horseRepository.findAll().stream()
-                .map(horseMapper::toDTO)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<HorseResponseDTO> getHorses(HorseFilterRequest filter, Pageable pageable) {
+        Specification<Horse> spec = HorseSpecifications.withFilters(filter);
+
+        return horseRepository.findAll(spec, pageable)
+                .map(horseMapper::toDTO);
     }
 
     @Override
@@ -73,21 +79,5 @@ public class HorseServiceImpl implements HorseService {
             throw new ResourceNotFoundException("Caballo no encontrado con id: " + id);
         }
         horseRepository.deleteById(id);
-    }
-
-    @Override
-    public Page<Horse> getCatalog(HorseFilterRequest filter, Pageable pageable) {
-
-        Specification<Horse> spec = Specification
-                .where(HorseSpecifications.verifiedOnly())
-                .and(HorseSpecifications.notSold(filter.getIncludeSold()))
-                .and(HorseSpecifications.breed(filter.getBreed()))
-                .and(HorseSpecifications.temperament(filter.getTemperament()))
-                .and(HorseSpecifications.priceBetween(filter.getMinPrice(), filter.getMaxPrice()))
-                .and(HorseSpecifications.ageBetween(filter.getMinAge(), filter.getMaxAge()))
-                .and(HorseSpecifications.location(filter.getLocation()))
-                .and(HorseSpecifications.search(filter.getSearch()));
-
-        return horseRepository.findAll(spec, pageable);
     }
 }

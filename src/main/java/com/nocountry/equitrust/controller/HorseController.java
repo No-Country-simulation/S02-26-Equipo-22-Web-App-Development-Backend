@@ -1,5 +1,6 @@
 package com.nocountry.equitrust.controller;
 
+import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
 import com.nocountry.equitrust.controller.dto.horse.HorseRequestDTO;
 import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.service.interfaces.HorseService;
@@ -9,6 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,10 +53,26 @@ public class HorseController {
     }
 
     @GetMapping
-    @Operation(summary = "Obtener todos los caballos", description = "Obtiene una lista de todos los caballos del sistema.")
-    @ApiResponse(responseCode = "200", description = "List of horses retrieved successfully")
-    public ResponseEntity<List<HorseResponseDTO>> getAllHorses() {
-        List<HorseResponseDTO> horses = horseService.getAllHorses();
+    @Operation(
+            summary = "Obtener catálogo de caballos",
+            description = "Devuelve una lista paginada de caballos con posibilidad de aplicar filtros como precio, edad, raza, ubicación y estado de verificación."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated horse catalog retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid filter parameters (e.g., invalid price or age range)")
+    })
+    public ResponseEntity<Page<HorseResponseDTO>> getHorses(
+            @Valid @ParameterObject HorseFilterRequest filter,
+            @ParameterObject
+            @PageableDefault(
+                    page = 0,
+                    size = 12,
+                    sort = "createdAt",
+                    direction = Sort.Direction.DESC
+            )
+            Pageable pageable
+    ) {
+        Page<HorseResponseDTO> horses = horseService.getHorses(filter, pageable);
         return ResponseEntity.ok(horses);
     }
 
