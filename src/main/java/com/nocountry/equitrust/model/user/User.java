@@ -56,12 +56,15 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private Role rol = Role.BUYER;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean enabled = true;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean deleted = false;
 
     @CreatedDate
@@ -74,6 +77,7 @@ public class User implements UserDetails {
 
     // Relationship: User can sell many horses
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Horse> horses = new ArrayList<>();
 
     // Spring Security UserDetails implementation

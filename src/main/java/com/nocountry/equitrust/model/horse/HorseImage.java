@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @Entity
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class HorseImage {
