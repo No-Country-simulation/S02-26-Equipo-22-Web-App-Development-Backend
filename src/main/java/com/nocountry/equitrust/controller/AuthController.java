@@ -3,7 +3,7 @@ package com.nocountry.equitrust.controller;
 import com.nocountry.equitrust.controller.dto.auth.AuthResponse;
 import com.nocountry.equitrust.controller.dto.auth.LoginRequest;
 import com.nocountry.equitrust.controller.dto.auth.RegisterRequest;
-import com.nocountry.equitrust.service.AuthService;
+import com.nocountry.equitrust.service.impl.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

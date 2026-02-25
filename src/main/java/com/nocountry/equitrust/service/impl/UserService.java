@@ -1,4 +1,4 @@
-package com.nocountry.equitrust.service;
+package com.nocountry.equitrust.service.impl;
 
 import com.nocountry.equitrust.controller.dto.auth.ChangePasswordRequest;
 import com.nocountry.equitrust.controller.dto.auth.UpdateProfileRequest;
