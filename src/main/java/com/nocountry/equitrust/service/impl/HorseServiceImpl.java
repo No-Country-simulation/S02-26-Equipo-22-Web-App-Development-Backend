@@ -1,71 +1,75 @@
 package com.nocountry.equitrust.service.impl;
 
-import com.nocountry.equitrust.dto.request.HorseRequestDTO;
-import com.nocountry.equitrust.dto.response.HorseResponseDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
+import com.nocountry.equitrust.controller.dto.horse.CreateHorseDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
+import com.nocountry.equitrust.controller.dto.horse.UpdateHorseDTO;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
-import com.nocountry.equitrust.mapper.HorseMapper;
 import com.nocountry.equitrust.model.horse.Horse;
 import com.nocountry.equitrust.model.user.User;
-import com.nocountry.equitrust.repository.HorseRepository;
+import com.nocountry.equitrust.repository.horse.HorseRepository;
 import com.nocountry.equitrust.repository.UserRepository;
-import com.nocountry.equitrust.service.HorseService;
+import com.nocountry.equitrust.repository.horse.specification.HorseSpecifications;
+import com.nocountry.equitrust.service.interfaces.HorseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class HorseServiceImpl implements HorseService {
 
     private final HorseRepository horseRepository;
-    private final HorseMapper horseMapper;
     private final UserRepository userRepository;
 
     @Override
-    public HorseResponseDTO createHorse(HorseRequestDTO horseRequestDTO) {
-        User owner = userRepository.findById(horseRequestDTO.ownerId())
+    @Transactional
+    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO) {
+        User owner = userRepository.findById(createHorseDTO.ownerId())
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Dueño no encontrado con id: " + horseRequestDTO.ownerId()));
+                        () -> new ResourceNotFoundException("Owner not found with id: " + createHorseDTO.ownerId()));
 
-        Horse horse = horseMapper.toEntity(horseRequestDTO, owner);
+        Horse horse = createHorseDTO.toModel(owner);
         Horse savedHorse = horseRepository.save(horse);
-        return horseMapper.toDTO(savedHorse);
+        return HorseResponseDTO.fromModel(savedHorse);
     }
 
     @Override
     public HorseResponseDTO getHorseById(Long id) {
         Horse horse = horseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Caballo no encontrado con id: " + id));
-        return horseMapper.toDTO(horse);
+                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
+        return HorseResponseDTO.fromModel(horse);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<HorseResponseDTO> getHorses(HorseFilterRequest filter, Pageable pageable) {
+        Specification<Horse> spec = HorseSpecifications.withFilters(filter);
+
+        return horseRepository.findAll(spec, pageable)
+                .map(HorseResponseDTO::fromModel);
     }
 
     @Override
-    public List<HorseResponseDTO> getAllHorses() {
-        return horseRepository.findAll().stream()
-                .map(horseMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public HorseResponseDTO updateHorse(Long id, HorseRequestDTO horseRequestDTO) {
+    @Transactional
+    public HorseResponseDTO updateHorse(Long id, UpdateHorseDTO updateHorseDTO) {
         Horse horse = horseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Caballo no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
 
-        horse.setBreed(horseRequestDTO.breed());
-        horse.setDescription(horseRequestDTO.description());
-        horse.setLocation(horseRequestDTO.location());
-        horse.setPrice(horseRequestDTO.price());
+        updateHorseDTO.updateModel(horse);
 
         Horse updatedHorse = horseRepository.save(horse);
-        return horseMapper.toDTO(updatedHorse);
+        return HorseResponseDTO.fromModel(updatedHorse);
     }
 
     @Override
     public void deleteHorse(Long id) {
         if (!horseRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Caballo no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Horse not found with id: " + id);
         }
         horseRepository.deleteById(id);
     }

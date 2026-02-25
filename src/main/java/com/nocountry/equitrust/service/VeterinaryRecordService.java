@@ -5,8 +5,8 @@ import com.nocountry.equitrust.controller.dto.veterinaryRecord.UpdateVeterinaryR
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.model.horse.VeterinaryRecord;
 import com.nocountry.equitrust.model.horse.Horse;
-import com.nocountry.equitrust.repository.HorseRepository;
 import com.nocountry.equitrust.repository.VeterinaryRecordRepository;
+import com.nocountry.equitrust.repository.horse.HorseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
