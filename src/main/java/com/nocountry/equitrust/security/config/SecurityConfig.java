@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,8 +54,11 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
-                        // Endpoints de Horse (ejemplo)
-                        .requestMatchers("/api/v1/horses/create").hasAnyRole("SELLER", "ADMIN")
+                        // Endpoints de Horse
+                        .requestMatchers(HttpMethod.GET, "/api/v1/horses/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/horses/**").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/horses/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/horses/**").authenticated()
 
                         // Endpoints de Users
                         .requestMatchers("/api/v1/users/me/**").authenticated()
@@ -62,6 +66,7 @@ public class SecurityConfig {
 
                         // Endpoints de Admin
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
 
                         // Cualquier otra request requiere autenticación
                         .anyRequest().authenticated()
