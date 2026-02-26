@@ -4,6 +4,7 @@ import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
 import com.nocountry.equitrust.controller.dto.horse.CreateHorseDTO;
 import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.controller.dto.horse.UpdateHorseDTO;
+import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.service.interfaces.HorseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,8 +37,10 @@ public class HorseController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "404", description = "Owner not found")
     })
-    public ResponseEntity<HorseResponseDTO> createHorse(@Valid @RequestBody CreateHorseDTO createHorseDTO) {
-        HorseResponseDTO createdHorse = horseService.createHorse(createHorseDTO);
+    public ResponseEntity<HorseResponseDTO> createHorse(
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody CreateHorseDTO createHorseDTO) {
+        HorseResponseDTO createdHorse = horseService.createHorse(createHorseDTO, user);
         return new ResponseEntity<>(createdHorse, HttpStatus.CREATED);
     }
 
@@ -75,7 +79,7 @@ public class HorseController {
         return ResponseEntity.ok(horses);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Update horse", description = "Updates an existing horse.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Horse updated successfully"),
@@ -83,8 +87,9 @@ public class HorseController {
             @ApiResponse(responseCode = "404", description = "Horse or owner not found")
     })
     public ResponseEntity<HorseResponseDTO> updateHorse(@PathVariable Long id,
+                                                        @AuthenticationPrincipal User currentUser,
                                                         @Valid @RequestBody UpdateHorseDTO updateHorseDTO) {
-        HorseResponseDTO updatedHorse = horseService.updateHorse(id, updateHorseDTO);
+        HorseResponseDTO updatedHorse = horseService.updateHorse(id, updateHorseDTO, currentUser);
         return ResponseEntity.ok(updatedHorse);
     }
 
@@ -94,8 +99,10 @@ public class HorseController {
             @ApiResponse(responseCode = "204", description = "Horse deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Horse not found")
     })
-    public ResponseEntity<Void> deleteHorse(@PathVariable Long id) {
-        horseService.deleteHorse(id);
+    public ResponseEntity<Void> deleteHorse(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable Long id) {
+        horseService.deleteHorse(id, currentUser);
         return ResponseEntity.noContent().build();
     }
 }
