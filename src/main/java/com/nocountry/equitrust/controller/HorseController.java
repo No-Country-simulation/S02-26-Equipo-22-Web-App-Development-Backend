@@ -1,7 +1,7 @@
 package com.nocountry.equitrust.controller;
 
-import com.nocountry.equitrust.dto.request.HorseRequestDTO;
-import com.nocountry.equitrust.dto.response.HorseResponseDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseRequestDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.service.HorseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,7 +1,8 @@
 package com.nocountry.equitrust.service;
 
-import com.nocountry.equitrust.dto.request.HorseRequestDTO;
-import com.nocountry.equitrust.dto.response.HorseResponseDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseRequestDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
+import com.nocountry.equitrust.model.horse.Horse;
 
 import java.util.List;
 
@@ -16,4 +17,8 @@ public interface HorseService {
     HorseResponseDTO updateHorse(Long id, HorseRequestDTO horseRequestDTO);
 
     void deleteHorse(Long id);
+
+    boolean existsHorseById(Long id);
+
+    Horse getHorseEntityById(Long id);
 }

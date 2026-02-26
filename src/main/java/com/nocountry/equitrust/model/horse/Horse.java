@@ -56,6 +56,9 @@ public class Horse {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HorseMedia> media = new ArrayList<>();
+
     @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL)
     private List<VeterinaryRecord> records = new ArrayList<>();
 

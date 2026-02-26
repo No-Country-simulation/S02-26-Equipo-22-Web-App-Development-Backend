@@ -1,7 +1,7 @@
 package com.nocountry.equitrust.service.impl;
 
-import com.nocountry.equitrust.dto.request.HorseRequestDTO;
-import com.nocountry.equitrust.dto.response.HorseResponseDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseRequestDTO;
+import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.mapper.HorseMapper;
 import com.nocountry.equitrust.model.horse.Horse;
@@ -68,5 +68,19 @@ public class HorseServiceImpl implements HorseService {
             throw new ResourceNotFoundException("Caballo no encontrado con id: " + id);
         }
         horseRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsHorseById(Long id) {
+        if (!horseRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Caballo no encontrado id: " + id);
+        }
+        return true;
+    }
+
+    @Override
+    public Horse getHorseEntityById(Long id) {
+        return horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Caballo no encontrado con id: " + id));
     }
 }
