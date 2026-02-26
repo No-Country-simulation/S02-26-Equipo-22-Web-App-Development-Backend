@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +28,8 @@ public class HorseServiceImpl implements HorseService {
 
     @Override
     @Transactional
-    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO) {
-        User owner = userRepository.findById(createHorseDTO.ownerId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Owner not found with id: " + createHorseDTO.ownerId()));
-
-        Horse horse = createHorseDTO.toModel(owner);
+    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO, User currentUser) {;
+        Horse horse = createHorseDTO.toModel(currentUser); //usuario vendedor ya identificado y en la base de datos por capa de seguridad
         Horse savedHorse = horseRepository.save(horse);
         return HorseResponseDTO.fromModel(savedHorse);
     }
@@ -56,9 +53,13 @@ public class HorseServiceImpl implements HorseService {
 
     @Override
     @Transactional
-    public HorseResponseDTO updateHorse(Long id, UpdateHorseDTO updateHorseDTO) {
+    public HorseResponseDTO updateHorse(Long id, UpdateHorseDTO updateHorseDTO, User currentUser) {
         Horse horse = horseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
+
+        if (!horse.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
+            throw new AccessDeniedException("Not allowed");
+        }
 
         updateHorseDTO.updateModel(horse);
 
@@ -67,10 +68,14 @@ public class HorseServiceImpl implements HorseService {
     }
 
     @Override
-    public void deleteHorse(Long id) {
-        if (!horseRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Horse not found with id: " + id);
+    @Transactional
+    public void deleteHorse(Long id, User currentUser) {
+        Horse horse = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
+
+        if (!horse.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
+            throw new AccessDeniedException("Not allowed");
         }
-        horseRepository.deleteById(id);
+        horseRepository.delete(horse);
     }
 }

@@ -61,11 +61,7 @@ public record CreateHorseDTO(
         List<String> imageIds,
 
         @Schema(description = "Cloudinary video public ID", example = "horse_video_1")
-        String videoId,
-
-        @Schema(description = "Owner user ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "Owner ID is required")
-        Long ownerId
+        String videoId
 
 ) {
     public Horse toModel(User owner) {

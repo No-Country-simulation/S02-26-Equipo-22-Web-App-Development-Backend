@@ -110,4 +110,8 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
+    public boolean isAdmin() {
+        return this.rol == Role.ADMIN;
+    }
 }

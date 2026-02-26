@@ -160,4 +160,8 @@ public class Horse {
         this.images.clear();
         publicIds.forEach(this::addImage);
     }
+
+    public boolean isOwnedBy(User user) {
+        return this.owner.getId().equals(user.getId());
+    }
 }
