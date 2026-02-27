@@ -8,7 +8,6 @@ import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.model.horse.Horse;
 import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.horse.HorseRepository;
-import com.nocountry.equitrust.repository.UserRepository;
 import com.nocountry.equitrust.repository.horse.specification.HorseSpecifications;
 import com.nocountry.equitrust.service.interfaces.HorseService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class HorseServiceImpl implements HorseService {
 
     private final HorseRepository horseRepository;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO, User currentUser) {;
-        Horse horse = createHorseDTO.toModel(currentUser); //usuario vendedor ya identificado y en la base de datos por capa de seguridad
+        Horse horse = createHorseDTO.toModel(currentUser); //usuario ya identificado y en la base de datos por capa de seguridad
         Horse savedHorse = horseRepository.save(horse);
         return HorseResponseDTO.fromModel(savedHorse);
     }

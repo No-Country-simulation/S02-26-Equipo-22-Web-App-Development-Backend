@@ -1,6 +1,5 @@
 package com.nocountry.equitrust.controller.dto.auth;
 
-import com.nocountry.equitrust.model.user.Role;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 
@@ -34,8 +33,6 @@ public record RegisterRequest(
         String number,
 
         @Size(max = 500, message = "Address must not exceed 500 characters")
-        String address,
-
-        Role rol
+        String address
 ) {
 }
