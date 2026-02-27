@@ -47,7 +47,6 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.password()))
                 .number(request.number())
                 .address(request.address())
-                .rol(request.rol() != null ? request.rol() : Role.BUYER)
                 .enabled(true)
                 .build();
 

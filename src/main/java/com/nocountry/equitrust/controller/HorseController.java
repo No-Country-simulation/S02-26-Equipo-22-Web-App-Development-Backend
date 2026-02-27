@@ -9,6 +9,7 @@ import com.nocountry.equitrust.service.interfaces.HorseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class HorseController {
 
     private final HorseService horseService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     @Operation(summary = "Create a new horse", description = "Creates a new horse in the system.")
     @ApiResponses(value = {
@@ -79,6 +81,7 @@ public class HorseController {
         return ResponseEntity.ok(horses);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}")
     @Operation(summary = "Update horse", description = "Updates an existing horse.")
     @ApiResponses(value = {
@@ -93,6 +96,7 @@ public class HorseController {
         return ResponseEntity.ok(updatedHorse);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete horse (Soft delete)", description = "Deletes a horse by marking it as deleted.")
     @ApiResponses(value = {

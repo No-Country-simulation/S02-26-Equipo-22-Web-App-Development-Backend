@@ -19,7 +19,6 @@ public record UserResponse(
         String email,
         String number,
         String address,
-        Role rol,
 
         @JsonProperty("created_at")
         LocalDateTime createdAt
@@ -33,7 +32,6 @@ public record UserResponse(
                 .email(user.getEmail())
                 .number(user.getNumber())
                 .address(user.getAddress())
-                .rol(user.getRol())
                 .createdAt(user.getCreatedAt())
                 .build();
     }
