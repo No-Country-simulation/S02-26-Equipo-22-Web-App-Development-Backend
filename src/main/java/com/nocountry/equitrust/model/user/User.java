@@ -57,7 +57,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private Role rol = Role.BUYER;
+    private Role rol = Role.USER;
 
     @Column(nullable = false)
     @Builder.Default

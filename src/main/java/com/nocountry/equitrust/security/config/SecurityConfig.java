@@ -56,7 +56,7 @@ public class SecurityConfig {
 
                         // Endpoints de Horse
                         .requestMatchers(HttpMethod.GET, "/api/v1/horses/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/horses/**").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/horses/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/horses/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/horses/**").authenticated()
 
