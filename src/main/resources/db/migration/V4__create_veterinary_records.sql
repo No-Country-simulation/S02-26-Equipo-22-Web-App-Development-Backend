@@ -12,3 +12,5 @@ CREATE TABLE veterinary_records (
     horse_id BIGINT NOT NULL,
     CONSTRAINT fk_vet_horse FOREIGN KEY (horse_id) REFERENCES horses(id) ON DELETE CASCADE
 );
+
+CREATE INDEX idx_vet_records_horse_id ON veterinary_records(horse_id);

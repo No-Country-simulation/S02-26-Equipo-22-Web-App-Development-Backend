@@ -60,8 +60,8 @@ public record CreateHorseDTO(
         @NotEmpty(message = "At least one image is required")
         List<String> imageIds,
 
-        @Schema(description = "Cloudinary video public ID", example = "horse_video_1")
-        String videoId
+        @Schema(description = "Youtube video url", example = "https://www.youtube.com/watch?v=s_IPgb7rF-g")
+        String videoUrl
 
 ) {
     public Horse toModel(User owner) {
@@ -76,7 +76,7 @@ public record CreateHorseDTO(
                 location,
                 description,
                 imageIds,
-                videoId,
+                videoUrl,
                 owner
         );
     }

@@ -5,3 +5,5 @@ CREATE TABLE horse_images (
     horse_id BIGINT NOT NULL,
     CONSTRAINT fk_horse_image FOREIGN KEY (horse_id) REFERENCES horses(id) ON DELETE CASCADE
 );
+
+CREATE INDEX idx_horse_images_horse_id ON horse_images(horse_id);

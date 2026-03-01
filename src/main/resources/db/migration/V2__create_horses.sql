@@ -16,10 +16,12 @@ CREATE TABLE horses (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN NOT NULL DEFAULT false,
     owner_id BIGINT NOT NULL,
-    CONSTRAINT fk_owner FOREIGN KEY (owner_id) REFERENCES users(id)
+    CONSTRAINT fk_owner FOREIGN KEY (owner_id) REFERENCES users(id),
+    CONSTRAINT chk_discount CHECK (discount_price IS NULL OR discount_price < price)
 );
 
-CREATE INDEX idx_horses_status ON horses(verification_status);
-CREATE INDEX idx_horses_sold ON horses(sold);
 CREATE INDEX idx_horses_price ON horses(price);
 CREATE INDEX idx_horses_age ON horses(age);
+
+-- Para el filtro principal del catalogo
+CREATE INDEX idx_horses_main_filter ON horses(verification_status, sold, deleted);

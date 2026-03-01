@@ -69,8 +69,8 @@ public class Horse {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "video_id")
-    private String videoId;
+    @Column(name = "video_url")
+    private String videoUrl;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -94,7 +94,7 @@ public class Horse {
 
 
     public Horse(String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
-                 String videoId, User owner) {
+                 String videoUrl, User owner) {
         validatePrice(price, discountPrice);
         this.breed = breed;
         this.age = age;
@@ -105,7 +105,7 @@ public class Horse {
         this.location = location;
         this.description = description;
         this.owner = owner;
-        this.videoId = videoId;
+        this.videoUrl = videoUrl;
         imagePublicIds.forEach(this::addImage);
     }
 
