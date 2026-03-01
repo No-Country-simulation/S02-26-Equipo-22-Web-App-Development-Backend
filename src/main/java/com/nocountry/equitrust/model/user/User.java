@@ -57,7 +57,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private Role rol = Role.USER;
+    private Role role = Role.USER;
 
     @Column(nullable = false)
     @Builder.Default
@@ -83,7 +83,7 @@ public class User implements UserDetails {
     // Spring Security UserDetails implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -112,6 +112,6 @@ public class User implements UserDetails {
     }
 
     public boolean isAdmin() {
-        return this.rol == Role.ADMIN;
+        return this.role == Role.ADMIN;
     }
 }

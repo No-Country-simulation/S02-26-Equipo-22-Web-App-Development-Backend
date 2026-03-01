@@ -50,14 +50,13 @@ public class Horse {
     private Discipline discipline;
 
     @Setter(AccessLevel.NONE)
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal price;
 
     @Setter(AccessLevel.NONE)
-    @Column(name = "discount_price")
+    @Column(name = "discount_price", precision = 15, scale = 2)
     private BigDecimal discountPrice;
 
-    @Column(nullable = false)
     private boolean sold = false;
 
     @Column(nullable = false)
@@ -70,20 +69,21 @@ public class Horse {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "video_id", nullable = false)
-    private String videoId;
+    @Column(name = "video_url")
+    private String videoUrl;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     private boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
     @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -94,7 +94,7 @@ public class Horse {
 
 
     public Horse(String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
-                 String videoId, User owner) {
+                 String videoUrl, User owner) {
         validatePrice(price, discountPrice);
         this.breed = breed;
         this.age = age;
@@ -105,7 +105,7 @@ public class Horse {
         this.location = location;
         this.description = description;
         this.owner = owner;
-        this.videoId = videoId;
+        this.videoUrl = videoUrl;
         imagePublicIds.forEach(this::addImage);
     }
 

@@ -42,8 +42,8 @@ public record UpdateHorseDTO(
         @Schema(description = "Replace all image public IDs", example = "[\"new_img_1\", \"new_img_2\"]")
         List<String> imageIds,
 
-        @Schema(description = "Cloudinary video public ID", example = "updated_video_1")
-        String videoId
+        @Schema(description = "Youtube video url", example = "https://www.youtube.com/watch?v=s_IPgb7rF-g")
+        String videoUrl
 
 ) {
     public void updateModel(Horse horse) {
@@ -60,7 +60,7 @@ public record UpdateHorseDTO(
         if (location != null) horse.setLocation(location);
         if (description != null) horse.setDescription(description);
 
-        if (videoId != null) horse.setVideoId(videoId);
+        if (videoUrl != null) horse.setVideoUrl(videoUrl);
 
         if (imageIds != null) {
             horse.replaceImages(imageIds);
