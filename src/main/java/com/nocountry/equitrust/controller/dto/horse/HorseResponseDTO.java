@@ -45,8 +45,8 @@ public record HorseResponseDTO(
         @Schema(description = "List of image public IDs", example = "[\"horse_img_1\", \"horse_img_2\"]")
         List<String> imageIds,
 
-        @Schema(description = "Video public ID", example = "horse_video_1")
-        String videoId,
+        @Schema(description = "Youtube video url", example = "https://www.youtube.com/watch?v=s_IPgb7rF-g")
+        String videoUrl,
 
         @Schema(description = "Verification status", example = "APPROVED")
         VerificationStatus status,
@@ -73,7 +73,7 @@ public record HorseResponseDTO(
                         .stream()
                         .map(HorseImage::getPublicId)
                         .toList(),
-                horse.getVideoId(),
+                horse.getVideoUrl(),
                 horse.getStatus(),
                 horse.getOwner() != null ? horse.getOwner().getId() : null
         );

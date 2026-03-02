@@ -19,7 +19,7 @@ public record VeterinaryRecordResponseDTO(
                 record.getId(),
                 record.getDescription(),
                 record.getPdfLink(),
-                record.getDate(),
+                record.getDateRecord(),
                 record.getClinicAddress(),
                 record.getVeterinarianLicense(),
                 record.getHorse().getId()

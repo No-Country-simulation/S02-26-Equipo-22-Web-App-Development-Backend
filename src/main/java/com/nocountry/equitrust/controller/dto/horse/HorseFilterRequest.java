@@ -35,4 +35,6 @@ public class HorseFilterRequest {
         if (minAge == null || maxAge == null) return true;
         return minAge <= maxAge;
     }
+
+    private String search;
 }

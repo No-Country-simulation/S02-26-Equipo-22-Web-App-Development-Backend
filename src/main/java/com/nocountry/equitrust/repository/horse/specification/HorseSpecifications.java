@@ -2,6 +2,7 @@ package com.nocountry.equitrust.repository.horse.specification;
 
 import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
 import com.nocountry.equitrust.model.horse.*;
+import jakarta.persistence.criteria.Expression;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -14,7 +15,8 @@ public class HorseSpecifications {
         }
 
         return Specification
-                .where(breed(filter.getBreed()))
+                .where(search(filter.getSearch()))
+                .and(breed(filter.getBreed()))
                 .and(gender(filter.getGender()))
                 .and(temperament(filter.getTemperament()))
                 .and(discipline(filter.getDiscipline()))
@@ -118,6 +120,20 @@ public class HorseSpecifications {
         return (root, query, cb) -> {
             if(discipline == null) return cb.conjunction();
             return cb.equal(root.get("discipline"), discipline);
+        };
+    }
+
+    public static Specification<Horse> search(String search) {
+        return (root, query, cb) -> {
+            if (search == null || search.isBlank()) return cb.conjunction();
+
+            String pattern = "%" + search.trim().toLowerCase() + "%";
+
+            return cb.or(
+                    cb.like(cb.lower(root.get("breed")), pattern),
+                    cb.like(cb.lower(root.get("location")), pattern),
+                    cb.like(cb.lower(root.get("description")), pattern)
+            );
         };
     }
 }

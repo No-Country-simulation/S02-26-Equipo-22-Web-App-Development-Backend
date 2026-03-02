@@ -26,7 +26,7 @@ public record UpdateVeterinaryRecordDTO(
     public void updateModel(VeterinaryRecord record) {
         if (description != null) record.setDescription(description);
         if (pdfLink != null) record.setPdfLink(pdfLink);
-        if (date != null) record.setDate(date);
+        if (date != null) record.setDateRecord(date);
         if (clinicAddress != null) record.setClinicAddress(clinicAddress);
         if (veterinarianLicense != null) record.setVeterinarianLicense(veterinarianLicense);
     }

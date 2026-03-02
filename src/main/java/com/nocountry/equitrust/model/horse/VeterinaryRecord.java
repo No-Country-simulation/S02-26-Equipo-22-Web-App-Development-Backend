@@ -31,8 +31,8 @@ public class VeterinaryRecord {
     @Column(name = "pdf_link", nullable = false)
     private String pdfLink;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(name = "date_record", nullable = false)
+    private LocalDate dateRecord;
 
     @Column(name = "clinic_address", nullable = false)
     private String clinicAddress;
@@ -59,10 +59,10 @@ public class VeterinaryRecord {
     @JoinColumn(name = "horse_id", nullable = false)
     private Horse horse;
 
-    public VeterinaryRecord(String description, String pdfLink, LocalDate date, String clinicAddress, String veterinarianLicense, Horse horse) {
+    public VeterinaryRecord(String description, String pdfLink, LocalDate dateRecord, String clinicAddress, String veterinarianLicense, Horse horse) {
         this.description = description;
         this.pdfLink = pdfLink;
-        this.date = date;
+        this.dateRecord = dateRecord;
         this.clinicAddress = clinicAddress;
         this.veterinarianLicense = veterinarianLicense;
         this.horse = horse;
