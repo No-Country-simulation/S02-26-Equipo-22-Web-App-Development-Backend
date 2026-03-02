@@ -11,7 +11,7 @@ CREATE TABLE horses (
     location VARCHAR(255) NOT NULL,
     verification_status VARCHAR(50) NOT NULL DEFAULT 'PENDING_DATA',
     description TEXT,
-    video_id VARCHAR(255),
+    video_url VARCHAR(255),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN NOT NULL DEFAULT false,
