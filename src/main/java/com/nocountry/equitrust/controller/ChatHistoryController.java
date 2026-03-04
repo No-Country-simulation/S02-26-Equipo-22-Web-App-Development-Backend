@@ -1,5 +1,6 @@
 package com.nocountry.equitrust.controller;
 
+import com.nocountry.equitrust.exception.UnauthorizedException;
 import com.nocountry.equitrust.model.chat.ChatMessage;
 import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.service.interfaces.ChatService;
@@ -32,10 +33,17 @@ public class ChatHistoryController {
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal User currentUser) {
 
+        // Defensive check
+        if (currentUser == null) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+
+        String username = currentUser.getUsername();
+
         return ResponseEntity.ok(chatService.getConversationHistory(
                 horseId,
                 buyerId,
-                currentUser.getUsername(),
+                username,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
         ));
     }

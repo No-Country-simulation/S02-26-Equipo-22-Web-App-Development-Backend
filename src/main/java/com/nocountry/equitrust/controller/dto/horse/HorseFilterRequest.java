@@ -14,40 +14,40 @@ import java.util.List;
 @Schema(description = "Filter parameters for horse catalog")
 public class HorseFilterRequest {
 
-    @Schema(description = "Filter by breeds (exact match, case insensitive)", example = "[\"Arabian\", \"Thoroughbred\"]")
+    @Schema(description = "Filter by breeds (exact match, case insensitive)")
     private List<String> breeds;
 
-    @Schema(description = "Filter by provinces (exact match, case insensitive)", example = "[\"Buenos Aires\", \"Córdoba\"]")
+    @Schema(description = "Filter by provinces (exact match, case insensitive)")
     private List<String> locations;
 
-    @Schema(description = "Filter by disciplines", example = "[\"DRESSAGE\", \"SHOW_JUMPING\"]")
+    @Schema(description = "Filter by disciplines")
     private List<Discipline> disciplines;
 
-    @Schema(description = "Filter by gender", example = "STALLION")
+    @Schema(description = "Filter by gender")
     private Gender gender;
 
-    @Schema(description = "Filter by temperament", example = "CALM")
+    @Schema(description = "Filter by temperament")
     private Temperament temperament;
 
-    @Schema(description = "Minimum price filter", example = "10000.00")
+    @Schema(description = "Minimum price filter")
     private BigDecimal minPrice;
 
-    @Schema(description = "Maximum price filter", example = "50000.00")
+    @Schema(description = "Maximum price filter")
     private BigDecimal maxPrice;
 
-    @Schema(description = "Minimum age filter", example = "3")
+    @Schema(description = "Minimum age filter")
     private Integer minAge;
 
-    @Schema(description = "Maximum age filter", example = "10")
+    @Schema(description = "Maximum age filter")
     private Integer maxAge;
 
-    @Schema(description = "Filter only verified horses", example = "true")
+    @Schema(description = "Filter only verified horses")
     private Boolean isVerified;
 
-    @Schema(description = "Include sold horses in results", example = "false", defaultValue = "false")
+    @Schema(description = "Include sold horses in results")
     private Boolean includeSold = false;
 
-    @Schema(description = "Full text search across title, breed, location and description", example = "Arabian")
+    @Schema(description = "Full text search across title, breed, location and description")
     private String search;
 
     @AssertTrue(message = "minPrice must be less than or equal to maxPrice")
