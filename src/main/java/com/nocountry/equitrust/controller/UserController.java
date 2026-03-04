@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-@Tag(name = "Users", description = "User management endpoints")
+@Tag(name = "Users")
 public class UserController {
 
     private final UserService userService;

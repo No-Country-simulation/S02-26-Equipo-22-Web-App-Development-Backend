@@ -2,10 +2,13 @@ package com.nocountry.equitrust.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.tags.Tag;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
@@ -14,7 +17,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearerAuth";
 
-        return new OpenAPI()
+        OpenAPI openAPI = new OpenAPI()
                 .components(
                         new Components()
                                 .addSecuritySchemes(
@@ -26,5 +29,15 @@ public class OpenApiConfig {
                                                 .bearerFormat("JWT")
                                 )
                 );
+
+        openAPI.setTags(List.of(
+                new Tag().name("Authentication").description("Authentication and authorization endpoints"),
+                new Tag().name("Horses Post").description("API for horse post management"),
+                new Tag().name("Veterinary Records").description("APIs for veterinary records management"),
+                new Tag().name("Users").description("User management endpoints"),
+                new Tag().name("Chat History").description("Chat history and messaging endpoints")
+        ));
+
+        return openAPI;
     }
 }

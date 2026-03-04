@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/horses/{horseId}/chat")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-@Tag(name = "Chat History", description = "REST API for chat history")
+@Tag(name = "Chat History")
 public class ChatHistoryController {
 
     private final ChatService chatService;

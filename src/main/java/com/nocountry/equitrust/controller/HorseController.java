@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/horses")
 @RequiredArgsConstructor
-@Tag(name = "Horses Post", description = "API for horse post management")
+@Tag(name = "Horses Post")
 public class HorseController {
 
     private final HorseService horseService;

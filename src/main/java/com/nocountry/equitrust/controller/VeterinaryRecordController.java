@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/horses/{horseId}/records")
 @RequiredArgsConstructor
-@Tag(name = "Veterinary Records", description = "API for managing veterinary records of a horse")
+@Tag(name = "Veterinary Records")
 public class VeterinaryRecordController {
 
     private final VeterinaryRecordService recordService;
