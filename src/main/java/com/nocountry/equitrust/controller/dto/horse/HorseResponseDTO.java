@@ -6,11 +6,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Schema(description = "Horse response DTO")
+@Schema(description = "Horse post response DTO")
 public record HorseResponseDTO(
 
-        @Schema(description = "Horse ID", example = "10")
+        @Schema(description = "Horse post ID", example = "10")
         Long id,
+
+        @Schema(description = "Post title", example = "Beautiful Arabian Horse")
+        String title,
 
         @Schema(description = "Breed", example = "Arabian")
         String breed,
@@ -56,9 +59,10 @@ public record HorseResponseDTO(
 
 ) {
 
-    public static HorseResponseDTO fromModel(Horse horse) {
+    public static HorseResponseDTO fromModel(HorsePost horse) {
         return new HorseResponseDTO(
                 horse.getId(),
+                horse.getTitle(),
                 horse.getBreed(),
                 horse.getAge(),
                 horse.getGender(),

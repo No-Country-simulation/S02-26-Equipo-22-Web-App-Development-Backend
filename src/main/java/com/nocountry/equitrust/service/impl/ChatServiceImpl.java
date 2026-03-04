@@ -4,7 +4,7 @@ import com.nocountry.equitrust.exception.ResourceNotFoundException;
 import com.nocountry.equitrust.exception.UnauthorizedException;
 import com.nocountry.equitrust.model.chat.ChatMessage;
 import com.nocountry.equitrust.model.chat.ChatEvent;
-import com.nocountry.equitrust.model.horse.Horse;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.ChatMessageRepository;
 import com.nocountry.equitrust.repository.UserRepository;
@@ -28,11 +28,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatMessage send(ChatMessage chatMessage, Long horseId, Long buyerId, String username) {
-        // Validate buyerId exists
-        validateBuyerExists(buyerId);
+        // Validate buyerId parameter first (null/invalid) -> IllegalArgumentException
+        validateBuyerIdParam(buyerId);
 
+        // Resolve authenticated user next so UnauthorizedException is thrown if username not found
         User sender = resolveUser(username);
-        Horse horse = resolveHorse(horseId);
+
+        // Now ensure buyer exists in DB (throws ResourceNotFoundException if absent)
+        ensureBuyerExists(buyerId);
+
+        HorsePost horse = resolveHorse(horseId);
 
         // Validate that the horse is not deleted or sold
         if (horse.isDeleted()) {
@@ -77,11 +82,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatEvent joinChat(Long horseId, Long buyerId, String username) {
-        // Validate buyerId exists
-        validateBuyerExists(buyerId);
+        // Validate buyerId parameter first
+        validateBuyerIdParam(buyerId);
 
+        // Resolve authenticated user first
         User user = resolveUser(username);
-        Horse horse = resolveHorse(horseId);
+
+        // Ensure buyer exists after authentication
+        ensureBuyerExists(buyerId);
+
+        HorsePost horse = resolveHorse(horseId);
 
         // Validate user is part of this conversation (either owner or buyer)
         boolean isOwner = horse.isOwnedBy(user);
@@ -97,10 +107,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatEvent leaveChat(Long horseId, Long buyerId, String username) {
-        // Validate buyerId exists
-        validateBuyerExists(buyerId);
+        // Validate buyerId parameter first
+        validateBuyerIdParam(buyerId);
+
+        // Resolve authenticated user first
         User user = resolveUser(username);
-        Horse horse = resolveHorse(horseId);
+
+        // Ensure buyer exists after authentication
+        ensureBuyerExists(buyerId);
+
+        HorsePost horse = resolveHorse(horseId);
 
         // Validate user is part of this conversation (either owner or buyer)
         boolean isOwner = horse.isOwnedBy(user);
@@ -116,10 +132,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Page<ChatMessage> getConversationHistory(Long horseId, Long buyerId, String username, Pageable pageable) {
-        // Validate buyerId exists
-        validateBuyerExists(buyerId);
+        // Validate buyerId parameter first
+        validateBuyerIdParam(buyerId);
+
+        // Resolve authenticated user first
         User user = resolveUser(username);
-        Horse horse = resolveHorse(horseId);
+
+        // Ensure buyer exists after authentication
+        ensureBuyerExists(buyerId);
+
+        HorsePost horse = resolveHorse(horseId);
 
         Long ownerId = horse.getOwner().getId();
 
@@ -154,15 +176,18 @@ public class ChatServiceImpl implements ChatService {
                 .orElseThrow(() -> new UnauthorizedException("User not found"));
     }
 
-    private Horse resolveHorse(Long horseId) {
+    private HorsePost resolveHorse(Long horseId) {
         return horseRepository.findById(horseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + horseId));
     }
 
-    private void validateBuyerExists(Long buyerId) {
+    private void validateBuyerIdParam(Long buyerId) {
         if (buyerId == null || buyerId <= 0) {
             throw new IllegalArgumentException("Invalid buyer ID");
         }
+    }
+
+    private void ensureBuyerExists(Long buyerId) {
         if (!userRepository.existsById(buyerId)) {
             throw new ResourceNotFoundException("Buyer not found with id: " + buyerId);
         }

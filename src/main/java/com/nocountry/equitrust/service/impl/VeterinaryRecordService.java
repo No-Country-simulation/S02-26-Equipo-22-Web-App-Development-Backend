@@ -4,8 +4,8 @@ import com.nocountry.equitrust.controller.dto.veterinaryRecord.CreateVeterinaryR
 import com.nocountry.equitrust.controller.dto.veterinaryRecord.UpdateVeterinaryRecordDTO;
 import com.nocountry.equitrust.controller.dto.veterinaryRecord.VeterinaryRecordResponseDTO;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import com.nocountry.equitrust.model.horse.VeterinaryRecord;
-import com.nocountry.equitrust.model.horse.Horse;
 import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.VeterinaryRecordRepository;
 import com.nocountry.equitrust.repository.horse.HorseRepository;
@@ -25,7 +25,7 @@ public class VeterinaryRecordService {
 
     @Transactional
     public VeterinaryRecordResponseDTO createVeterinaryRecordForHorse(Long horseId, CreateVeterinaryRecordDTO dto, User currentUser) {
-        Horse horse = findHorseOrThrow(horseId);
+        HorsePost horse = findHorseOrThrow(horseId);
         checkOwnerOrAdmin(horse, currentUser);
 
         VeterinaryRecord record = dto.toModel(horse);
@@ -36,7 +36,7 @@ public class VeterinaryRecordService {
 
     @Transactional(readOnly = true)
     public List<VeterinaryRecordResponseDTO> getAllRecordsByHorse(Long horseId) {
-        return recordRepository.findAllByHorseId(horseId)
+        return recordRepository.findAllByHorsePostId(horseId)
                 .stream()
                 .map(VeterinaryRecordResponseDTO::fromModel)
                 .toList();
@@ -50,20 +50,20 @@ public class VeterinaryRecordService {
     @Transactional
     public VeterinaryRecordResponseDTO updateRecord(Long horseId, Long recordId, UpdateVeterinaryRecordDTO dto, User currentUser) {
         VeterinaryRecord record = findRecordOrThrow(horseId, recordId);
-        checkOwnerOrAdmin(record.getHorse(), currentUser);
+        checkOwnerOrAdmin(record.getHorsePost(), currentUser);
 
         dto.updateModel(record);
-        record.getHorse().updateStatusToPending();
+        record.getHorsePost().updateStatusToPending();
 
         return VeterinaryRecordResponseDTO.fromModel(recordRepository.save(record));
     }
 
     @Transactional
     public void deleteRecord(Long horseId, Long recordId, User currentUser) {
-        Horse horse = findHorseOrThrow(horseId);
+        HorsePost horse = findHorseOrThrow(horseId);
         checkOwnerOrAdmin(horse, currentUser);
 
-        long count = recordRepository.deleteByIdAndHorseId(recordId, horseId);
+        long count = recordRepository.deleteByIdAndHorsePostId(recordId, horseId);
         if (count == 0) {
             throw new ResourceNotFoundException("Record not found with id: " + recordId + " for horse with id: " + horseId);
         }
@@ -73,18 +73,18 @@ public class VeterinaryRecordService {
 
     // --- Private helpers ---
 
-    private Horse findHorseOrThrow(Long horseId) {
+    private HorsePost findHorseOrThrow(Long horseId) {
         return horseRepository.findById(horseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + horseId));
     }
 
     private VeterinaryRecord findRecordOrThrow(Long horseId, Long recordId) {
-        return recordRepository.findByIdAndHorseId(recordId, horseId)
+        return recordRepository.findByIdAndHorsePostId(recordId, horseId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Record not found with id: " + recordId + " for horse with id: " + horseId));
     }
 
-    private void checkOwnerOrAdmin(Horse horse, User currentUser) {
+    private void checkOwnerOrAdmin(HorsePost horse, User currentUser) {
         if (!horse.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
             throw new AccessDeniedException("You don't have permission to modify this horse's records");
         }
