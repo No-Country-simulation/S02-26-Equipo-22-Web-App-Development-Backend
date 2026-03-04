@@ -9,9 +9,9 @@ import java.util.Optional;
 public interface VeterinaryRecordRepository
         extends JpaRepository<VeterinaryRecord, Long> {
 
-    Optional<VeterinaryRecord> findByIdAndHorseId(Long recordId, Long horseId);
+    Optional<VeterinaryRecord> findByIdAndHorsePostId(Long recordId, Long horsePostId);
 
-    List<VeterinaryRecord> findAllByHorseId(Long horseId);
+    List<VeterinaryRecord> findAllByHorsePostId(Long horsePostId);
 
-    long deleteByIdAndHorseId(Long recordId, Long horseId);
+    long deleteByIdAndHorsePostId(Long recordId, Long horsePostId);
 }

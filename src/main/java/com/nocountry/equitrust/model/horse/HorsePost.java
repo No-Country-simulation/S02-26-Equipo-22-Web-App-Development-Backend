@@ -18,18 +18,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "horses")
+@Table(name = "horse_posts")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE horses SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE horse_posts SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
-public class Horse {
+public class HorsePost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String title;
 
     @Column(nullable = false)
     private String breed;
@@ -86,16 +89,17 @@ public class Horse {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "horsePost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HorseImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "horsePost", cascade = CascadeType.ALL)
     private List<VeterinaryRecord> records = new ArrayList<>();
 
 
-    public Horse(String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
+    public HorsePost(String title, String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
                  String videoUrl, User owner) {
         validatePrice(price, discountPrice);
+        this.title = title;
         this.breed = breed;
         this.age = age;
         this.gender = gender;

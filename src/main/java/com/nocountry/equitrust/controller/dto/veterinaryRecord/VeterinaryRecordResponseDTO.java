@@ -22,7 +22,7 @@ public record VeterinaryRecordResponseDTO(
                 record.getDateRecord(),
                 record.getClinicAddress(),
                 record.getVeterinarianLicense(),
-                record.getHorse().getId()
+                record.getHorsePost().getId()
         );
     }
 }

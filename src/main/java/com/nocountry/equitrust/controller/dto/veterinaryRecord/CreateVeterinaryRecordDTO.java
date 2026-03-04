@@ -2,7 +2,7 @@ package com.nocountry.equitrust.controller.dto.veterinaryRecord;
 
 
 import com.nocountry.equitrust.model.horse.VeterinaryRecord;
-import com.nocountry.equitrust.model.horse.Horse;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -29,14 +29,14 @@ public record CreateVeterinaryRecordDTO(
         @NotBlank(message = "Veterinarian license/data is required")
         String veterinarianLicense
 ) {
-    public VeterinaryRecord toModel(Horse horse) {
+    public VeterinaryRecord toModel(HorsePost horsePost) {
         return new VeterinaryRecord(
                 this.description,
                 this.pdfLink,
                 this.date,
                 this.clinicAddress,
                 this.veterinarianLicense,
-                horse
+                horsePost
         );
     }
 }

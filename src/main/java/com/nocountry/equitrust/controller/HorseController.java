@@ -26,16 +26,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/horses")
 @RequiredArgsConstructor
-@Tag(name = "Horses", description = "API for horse management")
+@Tag(name = "Horses", description = "API for horse post management")
 public class HorseController {
 
     private final HorseService horseService;
 
     @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    @Operation(summary = "Create a new horse", description = "Creates a new horse in the system.")
+    @Operation(summary = "Create a new horse post", description = "Creates a new horse post in the system.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Horse created successfully"),
+            @ApiResponse(responseCode = "201", description = "Horse post created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "404", description = "Owner not found")
     })
@@ -47,10 +47,10 @@ public class HorseController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get horse by ID", description = "Retrieves details of a specific horse by its ID.")
+    @Operation(summary = "Get horse post by ID", description = "Retrieves details of a specific horse post by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Horse found"),
-            @ApiResponse(responseCode = "404", description = "Horse not found")
+            @ApiResponse(responseCode = "200", description = "Horse post found"),
+            @ApiResponse(responseCode = "404", description = "Horse post not found")
     })
     public ResponseEntity<HorseResponseDTO> getHorseById(@PathVariable Long id) {
         HorseResponseDTO horse = horseService.getHorseById(id);
@@ -59,12 +59,12 @@ public class HorseController {
 
     @GetMapping
     @Operation(
-            summary = "Get horse catalog",
-            description = "Returns a paginated list of horses with the ability to apply filters such as price, age, breed, location, and verification status."
+            summary = "Get horse posts catalog",
+            description = "Returns a paginated list of horse posts with the ability to apply filters such as price, age, breed, location, discipline, and verification status."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Paginated horse catalog retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid filter parameters (e.g., invalid price or age range)")
+            @ApiResponse(responseCode = "200", description = "Paginated horse posts catalog retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid filter parameters")
     })
     public ResponseEntity<Page<HorseResponseDTO>> getHorses(
             @Valid @ParameterObject HorseFilterRequest filter,
@@ -83,11 +83,11 @@ public class HorseController {
 
     @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{id}")
-    @Operation(summary = "Update horse", description = "Updates an existing horse.")
+    @Operation(summary = "Update horse post", description = "Updates an existing horse post.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Horse updated successfully"),
+            @ApiResponse(responseCode = "200", description = "Horse post updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "404", description = "Horse or owner not found")
+            @ApiResponse(responseCode = "404", description = "Horse post or owner not found")
     })
     public ResponseEntity<HorseResponseDTO> updateHorse(@PathVariable Long id,
                                                         @AuthenticationPrincipal User currentUser,
@@ -98,10 +98,10 @@ public class HorseController {
 
     @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete horse (Soft delete)", description = "Deletes a horse by marking it as deleted.")
+    @Operation(summary = "Delete horse post", description = "Deletes a horse post (soft delete).")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Horse deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Horse not found")
+            @ApiResponse(responseCode = "204", description = "Horse post deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Horse post not found")
     })
     public ResponseEntity<Void> deleteHorse(
             @AuthenticationPrincipal User currentUser,
