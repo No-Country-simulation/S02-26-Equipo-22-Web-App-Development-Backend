@@ -144,8 +144,10 @@ public class HorsePost {
         this.discountPrice = null;
     }
 
-    public void updateStatusToPending(){
-        this.status = VerificationStatus.PENDING_VERIFICATION;
+    public void updateStatusToPending() {
+        if (this.status == VerificationStatus.VERIFIED) {
+            this.status = VerificationStatus.PENDING_VERIFICATION;
+        }
     }
 
     public void addImage(String publicId) {

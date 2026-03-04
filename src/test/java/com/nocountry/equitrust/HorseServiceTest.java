@@ -1,4 +1,4 @@
-package com.nocountry.equitrust.service;
+package com.nocountry.equitrust;
 
 import com.nocountry.equitrust.controller.dto.horse.CreateHorseDTO;
 import com.nocountry.equitrust.controller.dto.horse.HorseFilterRequest;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(properties = {"JWT_SECRET=test-secret"})
 @ActiveProfiles("test")
 @DisplayName("HorseService Integration Tests")
-class HorseServiceIntegrationTest {
+class HorseServiceTest {
 
     @Autowired
     private HorseService horseService;
