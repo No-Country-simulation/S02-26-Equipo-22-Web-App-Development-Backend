@@ -20,4 +20,5 @@ public interface HorseService {
 
     void deleteHorse(Long id, User currentUser);
 
+    HorseResponseDTO requestVerification(Long id, User currentUser);
 }
