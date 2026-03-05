@@ -26,13 +26,14 @@ public class HorseServiceImpl implements HorseService {
 
     @Override
     @Transactional
-    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO, User currentUser) {;
+    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO, User currentUser) {
         HorsePost horsePost = createHorseDTO.toModel(currentUser);
         HorsePost savedHorsePost = horseRepository.save(horsePost);
         return HorseResponseDTO.fromModel(savedHorsePost);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HorseResponseDTO getHorseById(Long id) {
         HorsePost horsePost = horseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Horse post not found with id: " + id));
@@ -75,5 +76,20 @@ public class HorseServiceImpl implements HorseService {
             throw new AccessDeniedException("Not allowed");
         }
         horseRepository.delete(horsePost);
+    }
+
+    @Transactional
+    public HorseResponseDTO requestVerification(Long id, User currentUser) {
+        HorsePost horsePost = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse post not found with id: " + id));
+
+        if (!horsePost.isOwnedBy(currentUser)) {
+            throw new AccessDeniedException("Not allowed");
+        }
+
+        horsePost.requestVerification();
+        HorsePost updated = horseRepository.save(horsePost);
+
+        return HorseResponseDTO.fromModel(updated);
     }
 }

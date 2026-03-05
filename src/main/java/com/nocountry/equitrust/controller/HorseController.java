@@ -109,4 +109,21 @@ public class HorseController {
         horseService.deleteHorse(id, currentUser);
         return ResponseEntity.noContent().build();
     }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @PostMapping("/{id}/request-verification")
+    @Operation(summary = "Request verification for a horse post",
+            description = "Owner requests verification. Requires at least one veterinary record and a performance video.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Verification requested successfully"),
+            @ApiResponse(responseCode = "400", description = "Missing veterinary records or video"),
+            @ApiResponse(responseCode = "403", description = "Not the owner"),
+            @ApiResponse(responseCode = "404", description = "Horse post not found")
+    })
+    public ResponseEntity<HorseResponseDTO> requestVerification(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        HorseResponseDTO response = horseService.requestVerification(id, user);
+        return ResponseEntity.ok(response);
+    }
 }

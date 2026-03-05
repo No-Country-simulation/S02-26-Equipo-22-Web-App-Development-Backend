@@ -13,6 +13,7 @@ CREATE TABLE horse_posts (
     verification_status VARCHAR(50) NOT NULL DEFAULT 'PENDING_DATA',
     description TEXT,
     video_url VARCHAR(255),
+    rejection_reason TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN NOT NULL DEFAULT false,
