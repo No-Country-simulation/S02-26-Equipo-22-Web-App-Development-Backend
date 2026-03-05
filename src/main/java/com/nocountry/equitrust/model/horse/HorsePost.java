@@ -18,18 +18,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "horses")
+@Table(name = "horse_posts")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE horses SET deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE horse_posts SET deleted = true WHERE id=?")
 @Where(clause = "deleted = false")
-public class Horse {
+public class HorsePost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String title;
 
     @Column(nullable = false)
     private String breed;
@@ -72,6 +75,9 @@ public class Horse {
     @Column(name = "video_url")
     private String videoUrl;
 
+    @Column(name = "rejection_reason", columnDefinition = "TEXT")
+    private String rejectionReason;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -86,16 +92,16 @@ public class Horse {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "horsePost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HorseImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "horse", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "horsePost", cascade = CascadeType.ALL)
     private List<VeterinaryRecord> records = new ArrayList<>();
 
-
-    public Horse(String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
+    public HorsePost(String title, String breed, Integer age, Temperament temperament, Gender gender, Discipline discipline, BigDecimal price, BigDecimal discountPrice, String location, String description, List<String> imagePublicIds,
                  String videoUrl, User owner) {
         validatePrice(price, discountPrice);
+        this.title = title;
         this.breed = breed;
         this.age = age;
         this.gender = gender;
@@ -166,4 +172,47 @@ public class Horse {
     public boolean isOwnedBy(User user) {
         return this.owner.getId().equals(user.getId());
     }
+
+    public void requestVerification() {
+        if (this.records.isEmpty()) {
+            throw new IllegalStateException("Cannot request verification without veterinary records");
+        }
+        if (this.videoUrl == null || this.videoUrl.isBlank()) {
+            throw new IllegalStateException("Cannot request verification without a performance video");
+        }
+        if (this.status != VerificationStatus.PENDING_DATA &&
+            this.status != VerificationStatus.REJECTED) {
+            throw new IllegalStateException("Horse is already under verification or verified");
+        }
+        this.status = VerificationStatus.PENDING_VERIFICATION;
+        this.rejectionReason = null;
+    }
+
+    public void approve() {
+        if (this.status != VerificationStatus.PENDING_VERIFICATION) {
+            throw new IllegalStateException("Only pending horses can be approved");
+        }
+        this.status = VerificationStatus.VERIFIED;
+        this.rejectionReason = null;
+    }
+
+    public void reject(String reason) {
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException("Rejection reason is required");
+        }
+        if (this.status != VerificationStatus.PENDING_VERIFICATION) {
+            throw new IllegalStateException("Only pending horses can be rejected");
+        }
+        this.status = VerificationStatus.REJECTED;
+        this.rejectionReason = reason;
+    }
+
+    public boolean canRequestVerification() {
+        return !this.records.isEmpty()
+            && this.videoUrl != null
+            && !this.videoUrl.isBlank()
+            && (this.status == VerificationStatus.PENDING_DATA
+                || this.status == VerificationStatus.REJECTED);
+    }
 }
+

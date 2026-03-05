@@ -2,15 +2,18 @@ package com.nocountry.equitrust.controller.dto.horse;
 
 import com.nocountry.equitrust.model.horse.Discipline;
 import com.nocountry.equitrust.model.horse.Gender;
-import com.nocountry.equitrust.model.horse.Horse;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import com.nocountry.equitrust.model.horse.Temperament;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Schema(description = "DTO for partially updating a horse (PATCH)")
+@Schema(description = "DTO for partially updating a horse post (PATCH)")
 public record UpdateHorseDTO(
+
+        @Schema(description = "Post title", example = "Beautiful Arabian Horse for Sale")
+        String title,
 
         @Schema(description = "Horse breed", example = "Arabian")
         String breed,
@@ -33,7 +36,7 @@ public record UpdateHorseDTO(
         @Schema(description = "Discount price", example = "15000.00", minimum = "0.01")
         BigDecimal discountPrice,
 
-        @Schema(description = "Horse location", example = "Cordoba, Argentina")
+        @Schema(description = "Horse location (province only)", example = "Córdoba")
         String location,
 
         @Schema(description = "Detailed description")
@@ -46,8 +49,9 @@ public record UpdateHorseDTO(
         String videoUrl
 
 ) {
-    public void updateModel(Horse horse) {
+    public void updateModel(HorsePost horse) {
 
+        if (title != null) horse.setTitle(title);
         if (breed != null) horse.setBreed(breed);
         if (age != null) horse.setAge(age);
         if (gender != null) horse.setGender(gender);

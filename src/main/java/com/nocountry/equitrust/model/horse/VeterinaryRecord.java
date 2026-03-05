@@ -56,15 +56,15 @@ public class VeterinaryRecord {
     private String updatedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "horse_id", nullable = false)
-    private Horse horse;
+    @JoinColumn(name = "horse_post_id", nullable = false)
+    private HorsePost horsePost;
 
-    public VeterinaryRecord(String description, String pdfLink, LocalDate dateRecord, String clinicAddress, String veterinarianLicense, Horse horse) {
+    public VeterinaryRecord(String description, String pdfLink, LocalDate dateRecord, String clinicAddress, String veterinarianLicense, HorsePost horsePost) {
         this.description = description;
         this.pdfLink = pdfLink;
         this.dateRecord = dateRecord;
         this.clinicAddress = clinicAddress;
         this.veterinarianLicense = veterinarianLicense;
-        this.horse = horse;
+        this.horsePost = horsePost;
     }
 }

@@ -9,8 +9,8 @@ CREATE TABLE veterinary_records (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(255),
     updated_by VARCHAR(255),
-    horse_id BIGINT NOT NULL,
-    CONSTRAINT fk_vet_horse FOREIGN KEY (horse_id) REFERENCES horses(id) ON DELETE CASCADE
+    horse_post_id BIGINT NOT NULL,
+    CONSTRAINT fk_vet_horse_post FOREIGN KEY (horse_post_id) REFERENCES horse_posts(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_vet_records_horse_id ON veterinary_records(horse_id);
+CREATE INDEX idx_vet_records_horse_post_id ON veterinary_records(horse_post_id);

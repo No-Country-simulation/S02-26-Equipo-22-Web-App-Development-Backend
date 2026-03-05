@@ -2,7 +2,7 @@ package com.nocountry.equitrust.controller.dto.horse;
 
 import com.nocountry.equitrust.model.horse.Discipline;
 import com.nocountry.equitrust.model.horse.Gender;
-import com.nocountry.equitrust.model.horse.Horse;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import com.nocountry.equitrust.model.horse.Temperament;
 import com.nocountry.equitrust.model.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +11,12 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Schema(description = "DTO for creating a new horse")
+@Schema(description = "DTO for creating a new horse post")
 public record CreateHorseDTO(
+
+        @Schema(description = "Post title", example = "Beautiful Arabian Horse for Sale", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "Title is required")
+        String title,
 
         @Schema(description = "Horse breed", example = "Arabian", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "Breed is required")
@@ -45,7 +49,7 @@ public record CreateHorseDTO(
         @DecimalMin(value = "0.01", message = "Discount price must be greater than 0")
         BigDecimal discountPrice,
 
-        @Schema(description = "Horse location", example = "Buenos Aires, Argentina", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Horse location (province only)", example = "Buenos Aires", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "Location is required")
         String location,
 
@@ -64,8 +68,9 @@ public record CreateHorseDTO(
         String videoUrl
 
 ) {
-    public Horse toModel(User owner) {
-        return new Horse(
+    public HorsePost toModel(User owner) {
+        return new HorsePost(
+                title,
                 breed,
                 age,
                 temperament,

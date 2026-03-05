@@ -5,7 +5,7 @@ import com.nocountry.equitrust.controller.dto.horse.CreateHorseDTO;
 import com.nocountry.equitrust.controller.dto.horse.HorseResponseDTO;
 import com.nocountry.equitrust.controller.dto.horse.UpdateHorseDTO;
 import com.nocountry.equitrust.exception.ResourceNotFoundException;
-import com.nocountry.equitrust.model.horse.Horse;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import com.nocountry.equitrust.model.user.User;
 import com.nocountry.equitrust.repository.horse.HorseRepository;
 import com.nocountry.equitrust.repository.horse.specification.HorseSpecifications;
@@ -26,24 +26,25 @@ public class HorseServiceImpl implements HorseService {
 
     @Override
     @Transactional
-    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO, User currentUser) {;
-        Horse horse = createHorseDTO.toModel(currentUser); //usuario ya identificado y en la base de datos por capa de seguridad
-        Horse savedHorse = horseRepository.save(horse);
-        return HorseResponseDTO.fromModel(savedHorse);
+    public HorseResponseDTO createHorse(CreateHorseDTO createHorseDTO, User currentUser) {
+        HorsePost horsePost = createHorseDTO.toModel(currentUser);
+        HorsePost savedHorsePost = horseRepository.save(horsePost);
+        return HorseResponseDTO.fromModel(savedHorsePost);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HorseResponseDTO getHorseById(Long id) {
-        Horse horse = horseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
-        return HorseResponseDTO.fromModel(horse);
+        HorsePost horsePost = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse post not found with id: " + id));
+        return HorseResponseDTO.fromModel(horsePost);
     }
 
 
     @Override
     @Transactional(readOnly = true)
     public Page<HorseResponseDTO> getHorses(HorseFilterRequest filter, Pageable pageable) {
-        Specification<Horse> spec = HorseSpecifications.withFilters(filter);
+        Specification<HorsePost> spec = HorseSpecifications.withFilters(filter);
 
         return horseRepository.findAll(spec, pageable)
                 .map(HorseResponseDTO::fromModel);
@@ -52,28 +53,43 @@ public class HorseServiceImpl implements HorseService {
     @Override
     @Transactional
     public HorseResponseDTO updateHorse(Long id, UpdateHorseDTO updateHorseDTO, User currentUser) {
-        Horse horse = horseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
+        HorsePost horsePost = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse post not found with id: " + id));
 
-        if (!horse.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
+        if (!horsePost.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
             throw new AccessDeniedException("Not allowed");
         }
 
-        updateHorseDTO.updateModel(horse);
+        updateHorseDTO.updateModel(horsePost);
 
-        Horse updatedHorse = horseRepository.save(horse);
-        return HorseResponseDTO.fromModel(updatedHorse);
+        HorsePost updatedHorsePost = horseRepository.save(horsePost);
+        return HorseResponseDTO.fromModel(updatedHorsePost);
     }
 
     @Override
     @Transactional
     public void deleteHorse(Long id, User currentUser) {
-        Horse horse = horseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Horse not found with id: " + id));
+        HorsePost horsePost = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse post not found with id: " + id));
 
-        if (!horse.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
+        if (!horsePost.isOwnedBy(currentUser) && !currentUser.isAdmin()) {
             throw new AccessDeniedException("Not allowed");
         }
-        horseRepository.delete(horse);
+        horseRepository.delete(horsePost);
+    }
+
+    @Transactional
+    public HorseResponseDTO requestVerification(Long id, User currentUser) {
+        HorsePost horsePost = horseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horse post not found with id: " + id));
+
+        if (!horsePost.isOwnedBy(currentUser)) {
+            throw new AccessDeniedException("Not allowed");
+        }
+
+        horsePost.requestVerification();
+        HorsePost updated = horseRepository.save(horsePost);
+
+        return HorseResponseDTO.fromModel(updated);
     }
 }

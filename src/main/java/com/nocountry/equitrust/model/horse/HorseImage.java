@@ -23,11 +23,11 @@ public class HorseImage {
     private boolean mainImage = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "horse_id", nullable = false)
-    private Horse horse;
+    @JoinColumn(name = "horse_post_id", nullable = false)
+    private HorsePost horsePost;
 
-    public HorseImage(String publicId, Horse horse) {
+    public HorseImage(String publicId, HorsePost horsePost) {
         this.publicId = publicId;
-        this.horse = horse;
+        this.horsePost = horsePost;
     }
 }

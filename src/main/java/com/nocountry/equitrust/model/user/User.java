@@ -1,6 +1,6 @@
 package com.nocountry.equitrust.model.user;
 
-import com.nocountry.equitrust.model.horse.Horse;
+import com.nocountry.equitrust.model.horse.HorsePost;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -75,10 +75,10 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Relationship: User can sell many horses
+    // Relationship: User can sell many horse
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<Horse> horses = new ArrayList<>();
+    private List<HorsePost> horses = new ArrayList<>();
 
     // Spring Security UserDetails implementation
     @Override

@@ -67,6 +67,8 @@ public class SecurityConfig {
                         // Endpoints de Admin
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
+                        // Enpoints chat history
+                        .requestMatchers(HttpMethod.GET, "/api/v1/horses/*/chat/history/*").authenticated()
 
                         // Cualquier otra request requiere autenticación
                         .anyRequest().authenticated()
